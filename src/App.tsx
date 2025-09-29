@@ -25,7 +25,7 @@ function App() {
                           <BrowserRouter>
                               <ScreenProvider>
                                   <Routes>
-                                      <Route path="/project/:id" element={<ProjectCard />} />
+                                      <Route path="/" element={<ProjectCard />} />
                                       <Route path="*" element={<PageNotFound />} />
                                   </Routes>
                               </ScreenProvider>
