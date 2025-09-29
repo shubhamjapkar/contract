@@ -54,7 +54,7 @@ export function useMinting() {
         address: CONFIG.USDC_ADDRESS as `0x${string}`,
         abi: USDCABI,
         functionName: 'approve',
-        args: [CONFIG.CINEFI_NFT_ADDRESS, ethers.BigNumber.from(0)], // Will be set dynamically
+        args: [CONFIG.CINEFI_NFT_ADDRESS, ethers.BigNumber.from(0)],
         enabled: false, // Only enabled when needed
     });
 
@@ -65,10 +65,12 @@ export function useMinting() {
         address: CONFIG.CINEFI_NFT_ADDRESS as `0x${string}`,
         abi: CineFiNFTABI,
         functionName: 'claimNFT',
-        args: [[], [], []], // Will be set dynamically
-        enabled: false, // Only enabled when ready to mint
+        args: [[], [], []],
+        enabled: false,
     });
 
+
+    console.log(approvalConfig, claimConfig, "___claimConfig___")
     const { writeAsync: claimNFT } = useContractWrite(claimConfig);
 
     // Mint setup (paid)
