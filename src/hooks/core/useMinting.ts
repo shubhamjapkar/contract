@@ -1,10 +1,11 @@
-import { useState, useCallback } from 'react';
+import {useState, useCallback, useRef} from 'react';
 import {
     useAccount,
     useContractWrite,
     usePrepareContractWrite,
     useContractRead,
-    usePublicClient
+    usePublicClient,
+    useWalletClient
 } from 'wagmi';
 import { ethers } from 'ethers';
 import { useWhitelist } from './useWhitelist';
@@ -15,6 +16,21 @@ import CineFiNFTABI from '../../../src/abi/cinefi-nft-abi.json';
 import USDCABI from '../../abi/usdc-abi.json';
 import {MintPhase, MintTransaction } from '../../interface/api';
 import {parseNFTMintTransaction} from "../../services/blockchain/transactionParser.ts";
+import {getContractService} from "../../services/blockchain/contractService.ts";
+
+function walletClientToSigner(walletClient: any) {
+    if (!walletClient) return null;
+
+    const { account, chain, transport } = walletClient;
+    const network = {
+        chainId: chain.id,
+        name: chain.name,
+        ensAddress: chain.contracts?.ensRegistry?.address,
+    };
+    const provider = new ethers.providers.Web3Provider(transport, network);
+    const signer = provider.getSigner(account.address);
+    return signer;
+}
 
 export interface MintParams {
     tierIds: number[];
@@ -26,11 +42,18 @@ export interface MintParams {
 export function useMinting() {
     const { address } = useAccount();
     const publicClient = usePublicClient();
+    const { data: walletClient } = useWalletClient();
     const { validation, getMerkleProof, refetch } = useWhitelist();
     const { success, error: notifyError, info, warning } = useNotifications();
 
     const [loading, setLoading] = useState(false);
     const [txHash, setTxHash] = useState<string | null>(null);
+
+    const provider = useRef(
+        new ethers.providers.JsonRpcProvider(
+            import.meta.env.VITE_BASE_SEPOLIA_RPC || 'https://sepolia.base.org'
+        )
+    ).current;
 
     // Check USDC balance and allowance
     const { data: usdcBalance } = useContractRead({
@@ -171,14 +194,19 @@ export function useMinting() {
             let tx: any;
 
             if (isClaimPhase) {
-                if (!claimNFT) throw new Error('Claim function not available');
+                // if (!claimNFT) throw new Error('Claim function not available');
 
                 info('Claiming NFTs', 'Executing claim transaction...');
 
                 // @ts-ignore
-                tx = await claimNFT({
-                    recklesslySetUnpreparedArgs: [tierIds, quantities, merkleProofs]
-                });
+                // tx = await claimNFT({
+                //     recklesslySetUnpreparedArgs: [tierIds, quantities, merkleProofs]
+                // });
+
+                const signer = walletClientToSigner(walletClient);
+                if (!signer) throw new Error('Signer not available');
+
+                tx = await getContractService(provider).claimNFT(signer, tierIds, quantities, merkleProofs);
             } else {
                 if (!mintTier) throw new Error('Mint function not available');
 
@@ -254,6 +282,7 @@ export function useMinting() {
     }, [
         address,
         validation,
+        walletClient,
         usdcBalance,
         usdcAllowance,
         approveUSDC,
@@ -264,7 +293,9 @@ export function useMinting() {
         success,
         notifyError,
         info,
-        warning
+        warning,
+        publicClient,
+        provider
     ]);
 
     return {

@@ -1,8 +1,8 @@
-import { ethers } from 'ethers';
-import { MintPhase, TierInfo, MintTransaction } from '../../interface/api.ts';
+import {ethers} from 'ethers';
+import {MintPhase, TierInfo} from '../../interface/api.ts';
 import CineFiNFTABI from '../../abi/cinefi-nft-abi.json';
 import USDCABI from '../../abi/usdc-abi.json';
-import { CONFIG } from '../../config/environment.ts';
+import {CONFIG} from '../../config/environment.ts';
 
 export class ContractService {
     private provider: ethers.providers.Provider;
@@ -62,6 +62,16 @@ export class ContractService {
         } catch (error) {
             console.error('Error getting current phase:', error);
             return MintPhase.CLOSED;
+        }
+    }
+
+    async claimNFT(signer: ethers.Signer, tierIds: number[], quantities: number[], merkleProofs: string[][]) {
+        try {
+            const contracts = this.getContracts(signer);
+            return await contracts.nft.claimNFT(tierIds, quantities, merkleProofs);
+        } catch (error) {
+            console.error('Error claiming NFT:', error);
+            throw error;
         }
     }
 
