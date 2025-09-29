@@ -1,0 +1,921 @@
+[
+  {
+    "id": "8w98e389e2ee3893rr2w8927e978we79347ee05342",
+    "name": "Swari Agra",
+    "endDate": "19 / 08 / 2025",
+    "data": [
+      {
+        "type": "hero_section",
+        "data": {
+          "name": "Swari Agra",
+          "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/Swari+Agra+Poster.jpg",
+          "smallImage": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/IMG-20250903-WA0002.jpg",
+          "description": "Not an Escape, but a Strike on Agra!",
+          "rating": "9.2",
+          "category": ["Trending", "Comic", "Action"],
+          "fundingInProgress": [
+            {
+              "type": "raised",
+              "text": "$1M"
+            },
+            {
+              "type": "days",
+              "text": "Investment closed"
+            },
+            {
+              "type": "funded",
+              "text": "100% Funded"
+            },
+            {
+              "type": "backers",
+              "text": "297 backers"
+            }
+          ]
+        }
+      },
+      {
+        "type": "project_overview",
+        "data": {
+            "loglineText": "A daring retelling of a legendary leader’s journey to Agra, where a bold political move and a masterful escape transform into a calculated strike that challenges the Mughal Empire’s might, blending historical authenticity with patriotic thrill.",
+            "synopsisText" : "'Swari Agra' is not merely an escape story—it’s a high-stakes, strategic confrontation with Emperor Aurangzeb. Armed with detailed intelligence, the protagonist turns a politically perilous invitation into an opportunity to strike at the heart of the Mughal Empire. The drama unfolds with an insult in court, house arrest, a dramatic escape concealed in sweet boxes, a close pursuit by imperial forces, and ultimately outwitting adversaries, showcasing legendary courage, espionage, and tactical brilliance.",
+            "currentStatus": ["Script & Research Completed", "Core team ready","Shoot started"],
+            "releaseTarget": "Feb 2026",
+            "distribution": "Global",
+            "revenueStreams": [
+              {
+                "type": "office",
+                "text": "Box Office"
+              },
+              {
+                "type": "streaming",
+                "text": "Streaming Rights"
+              },
+              {
+                "type": "collections",
+                "text": "NFT Collections"
+              },
+              {
+                "type": "deals",
+                "text": "Licensing Deals"
+              }
+            ]
+        }
+      },
+      {
+        "type": "investment_opportunities",
+        "data": {
+          "target": {
+            "title": "$1M",
+            "description": "Raised by successful projects"
+          },
+          "raised": {
+            "title": "$1M",
+            "progress": "100%"
+          },
+          "revenue_distribution": [
+            {
+              "key": "Profit-share with investor transparency.",
+              "value": ""
+            },
+            {
+              "key": "SWA Registered script, experienced director, regular updates.\n",
+              "value": "",
+              "style": {
+              }
+            }
+          ],
+          "transparency": [
+            "Real time on-chain revenue tracking",
+            "Automated smart contract distribution",
+            "Quarterly financial response",
+            "Full audit trail on blockchain"
+          ]
+        }
+      },
+      {
+        "type": "creative_team",
+        "data": [
+          {
+            "name": "Digpal Lanjekar",
+            "role": "Writer/Director",
+            "info": "15+ years, historical films, creative & executive leader.",
+            "description": "Digpal Lanjekar is an Indian film director and writer renowned for directing successful Marathi historical films like Farzand, Fatteshikast, and Pawankhind. With over 15 years of experience, he is celebrated for blending historical accuracy with emotional storytelling and has won multiple awards for his work in Marathi cinema.",
+            "verified": true,
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/Digpal+Lanjekar.png",
+            "experience": "15+ years",
+            "speciality": "Historical films, creative & executive leader"
+          }
+        ]
+      },
+      {
+        "type": "proven_track_record",
+        "data": [
+          {
+            "title": "Farzand",
+            "author": "Blockbuster, acclaimed film",
+            "tags": ["Historical", "Action", "Drama"],
+            "description": "The story of a brave warrior whose courage and strategy turn the tides of war, establishing a legacy of valor in Maratha history.",
+            "budget": "$85,000 raised",
+            "revenue": "$8.1 M",
+            "roi": "+400%",
+            "platform": "Netflix",
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/fatehe.png"
+          },
+          {
+            "title": "Fatteshikast",
+            "author": "Best Director, Best Film, archived by Maratha Museum",
+            "tags": [
+              "Historical",
+              "Action",
+              "Political Drama"
+            ],
+            "description": "A daring mission of stealth and strategy unfolds as Maratha forces execute a calculated strike against their powerful enemies.",
+            "budget": "$120,000 raised",
+            "revenue": "$12.3 M",
+            "roi": "+600%",
+            "platform": "Prime Video",
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/fatheh.png"
+          },
+          {
+            "title": "Pawank hind",
+            "author": "State Award winner, audience favorite",
+            "tags": [
+              "Historical",
+              "War",
+              "Drama"
+            ],
+            "description": "An epic tale of sacrifice and valor where a small Maratha force heroically defends the kingdom against overwhelming odds.",
+            "budget": "$50,000 raised",
+            "revenue": "$4.5 M",
+            "roi": "+300%",
+            "platform": "HBO Max",
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/pavnaghadi.png"
+          },
+          {
+            "title": "Sher Shivraj",
+            "author": "Part of successful series",
+            "tags": [
+              "Historical",
+              "Action",
+              "Biography"
+            ],
+            "description": "A fierce and strategic portrayal of Maratha leadership as it confronts challenges to consolidate power and inspire the people.",
+            "budget": "$95,000 raised",
+            "revenue": "$6.8 M",
+            "roi": "+420%",
+            "platform": "Disney+",
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/sher+shivaji.png"
+          },
+          {
+            "title": "Subhedar",
+            "author": "Strong box office, series continuity",
+            "tags": [
+              "Historical",
+              "Biography",
+              "Action"
+            ],
+            "description": "The rise of a legendary Maratha commander whose leadership and bravery reshape the course of history.",
+            "budget": "$95,000 raised",
+            "revenue": "$6.8 M",
+            "roi": "+420%",
+            "platform": "Disney+",
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/sobhe.png"
+          },
+          {
+            "title": "Shivrayancha Chhava",
+            "author": "Latest addition, continuing legacy",
+            "tags": [
+              "Historical",
+              "Drama",
+              "Coming-of-Age"
+            ],
+            "description": "A poignant story of youth, legacy, and the trials faced by the next generation in upholding Maratha pride and honor.",
+            "budget": "$95,000 raised",
+            "revenue": "$6.8 M",
+            "roi": "+420%",
+            "platform": "Disney+",
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/chava.png"
+          }
+        ]
+      },
+      {
+        "type": "success_analysis",
+        "data": [
+          {
+            "type": "ai_success_analyser",
+            "data": []
+          },
+          {
+            "type": "risk_assessment",
+            "data": [
+              {
+                "label": "market competition",
+                "value": "Medium Risk",
+                "color": "#f5aa6a",
+                "width": "279px"
+              },
+              {
+                "label": "budget management",
+                "value": "Low Risk",
+                "color": "#16a149",
+                "width": "99px"
+              },
+              {
+                "label": "audience appeal",
+                "value": "Very Low Risk",
+                "color": "#16a149",
+                "width": "16px"
+              },
+              {
+                "label": "distribution risk",
+                "value": "Low Risk",
+                "color": "#16a149",
+                "width": "135px"
+              },
+              {
+                "label": "technology risk",
+                "value": "Very Low Risk",
+                "color": "#16a149",
+                "width": "30px"
+              }
+            ]
+          },
+          {
+            "type": "ai_insights",
+            "data": []
+          },
+          {
+            "type": "ai_analysis_report",
+            "data": {
+              "updated": "10/10/2025",
+              "link": "#"
+            }
+          }
+        ]
+      },
+      {
+        "type": "project_updates",
+        "data": [
+          {
+            "title": "Casting director confirmed",
+            "date": "January 15, 2025",
+            "badge": "Milestone",
+            "description": "We have secured renowned casting director Maria Schulz for this movie."
+          },
+          {
+            "title": "Script Revision Complete",
+            "date": "January 15, 2025",
+            "badge": "Development",
+            "description": "We have secured renowned casting director Maria Schulz for this movie."
+          },
+          {
+            "title": "Investment Milestone Reached",
+            "date": "January 15, 2025",
+            "badge": "Funding",
+            "description": "We have secured renowned casting director Maria Schulz for this movie."
+          }
+        ]
+      },
+      {
+        "type": "community_discussion_test",
+        "data": [
+          {
+            "name": "Alex Chen",
+            "role": "Investor",
+            "time": "2hrs ago",
+            "verified": true,
+            "text": "What an amazing film, absolutely thrilled. Would recommend to all!",
+            "likes": 24,
+            "replyIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/88FNMtxcJZ.png",
+            "commentsIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/UPa4DJek8F.png",
+            "avatar": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/sivZOX9rV6.png"
+          },
+          {
+            "name": "Hana Roberts",
+            "role": "Investor",
+            "time": "2hrs ago",
+            "verified": true,
+            "text": "What an amazing film, absolutely thrilled. Would recommend to all!",
+            "likes": 24,
+            "replyIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/33PgS0ePNr.png",
+            "commentsIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/oOCFgXC218.png",
+            "avatar": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/Ahvb5J74tu.png"
+          },
+          {
+            "name": "Rozalia",
+            "role": "Investor",
+            "time": "2hrs ago",
+            "verified": true,
+            "text": "What an amazing film, absolutely thrilled. Would recommend to all!",
+            "likes": 24,
+            "replyIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/SuHvKO5eej.png",
+            "commentsIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/oOCFgXC218.png",
+            "avatar": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/BNqF9Oojs4.png"
+          }
+        ]
+      },
+      {
+        "type": "faq",
+        "data": [
+          {
+            "question": "Can I invest directly as an individual?",
+            "answer": "Yes, subject to minimum investment terms."
+          },
+          {
+            "question": "What are the primary revenue channels?",
+            "answer": "Box office, streaming, and satellite rights."
+          },
+          {
+            "question": "How is historical accuracy ensured?",
+            "answer": "Expert historical consultants engaged through all phases."
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "id": "8w9292309324e2ee3893rr2w8927e978we79347ee05342",
+    "name": "Kubeera",
+    "endDate": "05 / 03 / 2025",
+    "data": [
+      {
+        "type": "hero_section",
+        "data": {
+          "name": "Kubeera",
+          "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/kubera.jpg",
+          "smallImage": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/Kuberaa+1458X972-2.jpg",
+          "description": "A ruthless billionaire uses beggars to launder money with the help of a disgraced civil servant",
+          "rating": "8.2",
+          "category": ["Political Thriller"],
+          "fundingInProgress": [
+            {
+              "type": "raised",
+              "text": "$1.5M"
+            },
+            {
+              "type": "days",
+              "text": "Investment closed"
+            },
+            {
+              "type": "funded",
+              "text": "100% Funded"
+            },
+            {
+              "type": "backers",
+              "text": "554 backers"
+            }
+          ]
+        }
+      },
+      {
+        "type": "project_overview",
+        "data": {
+          "loglineText": "A beggar undergoes a dramatic transformation, exploring themes of greed, ambition, and moral dilemmas faced by the characters leading to a quest for redemption.",
+          "synopsisText" : "Kuberaa presents a complex crime drama exploring themes of corruption, moral ambiguity, and social stratification. The film follows the intersecting lives of characters navigating the murky waters of financial crime and social justice, anchored by powerful performances from Dhanush and Nagarjuna Akkineni.",
+          "currentStatus": ["Released"],
+          "releaseTarget": "Q2 2025",
+          "distribution": "Global",
+          "revenueStreams": [
+            {
+              "type": "office",
+              "text": "Box Office"
+            },
+            {
+              "type": "streaming",
+              "text": "Streaming Rights"
+            },
+            {
+              "type": "collections",
+              "text": "NFT Collections"
+            },
+            {
+              "type": "deals",
+              "text": "Licensing Deals"
+            }
+          ]
+        }
+      },
+      {
+        "type": "investment_opportunities",
+        "data": {
+          "target": {
+            "title": "$1.5M",
+            "description": "Raised by successful projects"
+          },
+          "raised": {
+            "title": "$1.5M",
+            "progress": "100%"
+          },
+          "revenue_distribution": [
+            {
+              "key": "Profit-share with investor transparency.",
+              "value": ""
+            },
+            {
+              "key": "SWA Registered script, experienced director, regular updates.\n",
+              "value": "",
+              "style": {
+              }
+            }
+          ],
+          "transparency": [
+            "Real time on-chain revenue tracking",
+            "Automated smart contract distribution",
+            "Quarterly financial response",
+            "Full audit trail on blockchain"
+          ]
+        }
+      },
+      {
+        "type": "creative_team",
+        "data": [
+          {
+            "name": "Sekhar Kammula",
+            "role": "Writer/Director",
+            "info": "20+ years, Screenwriting, Direction, Realistic Storytelling",
+            "description": "Sekhar Kammula is an acclaimed Indian filmmaker and screenwriter known for his thought-provoking Telugu films blending realism with social themes. He has directed critically and commercially successful movies like Anand, Happy Days, and Fidaa. His works are celebrated for their simplicity, emotional depth, and strong characterizations.",
+            "verified": true,
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/Sekhar+Kammula.jpeg",
+            "experience": "20+ years",
+            "speciality": "Screenwriting, Direction, Realistic Storytelling"
+          },
+          {
+            "name": "Chaithanya Pingali",
+            "role": "Writer/Director",
+            "info": "10+ years, Screenwriting, Direction, Contemporary Storytelling",
+            "description": "Chaithanya Pingali is an emerging Indian filmmaker and storyteller known for his work in Telugu cinema. He gained recognition with his directorial debut Baanam and continues to explore narratives that combine fresh perspectives with socially rooted themes. He is regarded as a promising voice in contemporary cinema.",
+            "verified": true,
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/Sahitya-Akademi.jpg",
+            "experience": "10+ years",
+            "speciality": "Screenwriting, Direction, Contemporary Storytelling"
+          }
+        ]
+      },
+      {
+        "type": "success_analysis",
+        "data": [
+          {
+            "type": "ai_success_analyser",
+            "data": []
+          },
+          {
+            "type": "risk_assessment",
+            "data": [
+              {
+                "label": "market competition",
+                "value": "Medium Risk",
+                "color": "#f5aa6a",
+                "width": "279px"
+              },
+              {
+                "label": "budget management",
+                "value": "Low Risk",
+                "color": "#16a149",
+                "width": "99px"
+              },
+              {
+                "label": "audience appeal",
+                "value": "Very Low Risk",
+                "color": "#16a149",
+                "width": "16px"
+              },
+              {
+                "label": "distribution risk",
+                "value": "Low Risk",
+                "color": "#16a149",
+                "width": "135px"
+              },
+              {
+                "label": "technology risk",
+                "value": "Very Low Risk",
+                "color": "#16a149",
+                "width": "30px"
+              }
+            ]
+          },
+          {
+            "type": "ai_insights",
+            "data": []
+          },
+          {
+            "type": "ai_analysis_report",
+            "data": {
+              "updated": "10/10/2025",
+              "link": "#"
+            }
+          }
+        ]
+      },
+      {
+        "type": "proven_track_record",
+        "data": [
+          {
+            "title": "Love Story ",
+            "author": "Blockbuster, acclaimed film",
+            "tags": ["Romance", "Drama"],
+            "description": "A romantic drama that earned commercial success and wide acclaim.",
+            "budget": "$85,000 raised",
+            "revenue": "$8.1 M",
+            "roi": "+400%",
+            "platform": "Netflix",
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/image.png"
+          },
+          {
+            "title": "The Ghost",
+            "author": "Best Director, Best Film, archived by Maratha Museum",
+            "tags": [
+              "Action",
+              "Thriller"
+            ],
+            "description": "An action thriller starring Nagarjuna Akkineni.",
+            "budget": "$120,000 raised",
+            "revenue": "$12.3 M",
+            "roi": "+600%",
+            "platform": "Prime Video",
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/image_1.png"
+          },
+          {
+            "title": "Lakshya",
+            "author": "State Award winner, audience favorite",
+            "tags": [
+              "Sports",
+              "Drama"
+            ],
+            "description": "A sports drama centered on archery and personal triumph.",
+            "budget": "$50,000 raised",
+            "revenue": "$4.5 M",
+            "roi": "+300%",
+            "platform": "HBO Max",
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/image_3.png"
+          },
+          {
+            "title": "Michael",
+            "author": "Part of successful series",
+            "tags": [
+              "Gangster",
+              "Action",
+              "Drama"
+            ],
+            "description": "Gangster action film.",
+            "budget": "$95,000 raised",
+            "revenue": "$6.8 M",
+            "roi": "+420%",
+            "platform": "Disney+",
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/image_4.png"
+          },
+          {
+            "title": "Maama Mascheendra",
+            "author": "Strong box office, series continuity",
+            "tags": [
+              "Drama",
+              "Crime"
+            ],
+            "description": "Family drama with crime elements.",
+            "budget": "$95,000 raised",
+            "revenue": "$6.8 M",
+            "roi": "+420%",
+            "platform": "Disney+",
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/image_8.png"
+          },
+          {
+            "title": "Anubhavinchu Raja",
+            "author": "Latest addition, continuing legacy",
+            "tags": [
+              "Comedy",
+              "Drama"
+            ],
+            "description": "Comedy-drama exploring self-discovery.",
+            "budget": "$95,000 raised",
+            "revenue": "$6.8 M",
+            "roi": "+420%",
+            "platform": "Disney+",
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/image_82.png"
+          }
+        ]
+      },
+      {
+        "type": "project_updates",
+        "data": [
+          {
+            "title": "Funding Completed",
+            "date": "February 8, 2025",
+            "badge": "Milestone",
+            "description": "We have successfully secured all funds required for this Movie."
+          },
+          {
+            "title": "Shoot Completed",
+            "date": "March 25, 2025",
+            "badge": "Milestone",
+            "description": "We have successfully completed the shoot for this Movie."
+          },
+          {
+            "title": "Movie Released",
+            "date": "June 20, 2025",
+            "badge": "Milestone",
+            "description": "The movie is released and is a box office super hit."
+          }
+        ]
+      },
+      {
+        "type": "community_discussion_test",
+        "data": [
+          {
+            "name": "Alex Chen",
+            "role": "Investor",
+            "time": "2hrs ago",
+            "verified": true,
+            "text": "What an amazing film, absolutely thrilled. Would recommend to all!",
+            "likes": 24,
+            "replyIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/88FNMtxcJZ.png",
+            "commentsIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/UPa4DJek8F.png",
+            "avatar": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/sivZOX9rV6.png"
+          },
+          {
+            "name": "Hana Roberts",
+            "role": "Investor",
+            "time": "2hrs ago",
+            "verified": true,
+            "text": "What an amazing film, absolutely thrilled. Would recommend to all!",
+            "likes": 24,
+            "replyIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/33PgS0ePNr.png",
+            "commentsIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/oOCFgXC218.png",
+            "avatar": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/Ahvb5J74tu.png"
+          },
+          {
+            "name": "Rozalia",
+            "role": "Investor",
+            "time": "2hrs ago",
+            "verified": true,
+            "text": "What an amazing film, absolutely thrilled. Would recommend to all!",
+            "likes": 24,
+            "replyIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/SuHvKO5eej.png",
+            "commentsIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/oOCFgXC218.png",
+            "avatar": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/BNqF9Oojs4.png"
+          }
+        ]
+      },
+      {
+        "type": "faq",
+        "data": [
+          {
+            "question": "Can I invest directly as an individual?",
+            "answer": "Yes, subject to minimum investment terms."
+          },
+          {
+            "question": "What are the primary revenue channels?",
+            "answer": "Box Office, Streaming and Satellite rights."
+          },
+          {
+            "question": "How is historical accuracy ensured?",
+            "answer": "Expert historical consultants engaged through all phases."
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "id": "8w9292309324e2ee3893rr2w8927e978we79347ee05777",
+    "name": "Moksh",
+    "endDate": "05 / 03 / 2025",
+    "data": [
+      {
+        "type": "hero_section",
+        "data": {
+          "name": "Moksh",
+          "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/Moksh+(1).png",
+          "smallImage": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/moksh+poster.png",
+          "description": "A breathtaking mytho-futuristic comic where reincarnation meets cosmic war",
+          "rating": "7.2",
+          "category": ["Comic"],
+          "fundingInProgress": [
+            {
+              "type": "raised",
+              "text": "$120k"
+            },
+            {
+              "type": "days",
+              "text": "Investment closed"
+            },
+            {
+              "type": "funded",
+              "text": "100% Funded"
+            },
+            {
+              "type": "backers",
+              "text": "324 backers"
+            }
+          ]
+        }
+      },
+      {
+        "type": "project_overview",
+        "data": {
+          "loglineText": "In a world where mythology collides with modern chaos, the son of an exiled priest and a shadowy assassin rises as both savior and conqueror—wielding poison as power, he seeks to forge a perfect order, even if it means becoming the very tyrant he was destined to fight.",
+          "synopsisText" : "The Foundation of the Universe is an epic saga where mythology meets modern chaos. At its core is D, son of an exiled priest and a secret assassin, born with the legacy of Halahal—the ultimate poison. Unlike Raavan, who drew power from divine nectar, D transforms destruction itself into strength. First hailed as a visionary bridging science, mysticism, and philosophy, he seeks to build a utopia free of suffering. But his pursuit of absolute order edges into tyranny, blurring the line between savior and conqueror. Shaped by his father’s restraint and his mother’s ambition, D’s rise sparks a battle over destiny, free will, and the future of humanity—where salvation and annihilation are two sides of the same truth.",
+          "currentStatus": ["Released"],
+          "releaseTarget": "Q2 2025",
+          "distribution": "Global",
+          "revenueStreams": [
+            {
+              "type": "office",
+              "text": "Box Office"
+            },
+            {
+              "type": "streaming",
+              "text": "Streaming Rights"
+            },
+            {
+              "type": "collections",
+              "text": "NFT Collections"
+            },
+            {
+              "type": "deals",
+              "text": "Licensing Deals"
+            }
+          ]
+        }
+      },
+      {
+        "type": "investment_opportunities",
+        "data": {
+          "target": {
+            "title": "$ 120k",
+            "description": "Raised by successful projects"
+          },
+          "raised": {
+            "title": "$ 120k",
+            "progress": "100%"
+          },
+          "revenue_distribution": [
+            {
+              "key": "Profit-share with investor transparency.",
+              "value": ""
+            },
+            {
+              "key": "SWA Registered script, experienced director, regular updates.\n",
+              "value": "",
+              "style": {
+              }
+            }
+          ],
+          "transparency": [
+            "Real time on-chain revenue tracking",
+            "Automated smart contract distribution",
+            "Quarterly financial response",
+            "Full audit trail on blockchain"
+          ]
+        }
+      },
+      {
+        "type": "creative_team",
+        "data": [
+          {
+            "name": "Alok Sharma",
+            "role": "Writer",
+            "info": "15+ years, historical films, creative & executive leader.",
+            "description": "Alok Sharma is an Indian media professional with experience across television, animation, films, radio, comics, and digital content. Currently Chief Creative Officer at Mugafi, he is building six original universes including Moksh, Defense Universe, and Freedom Verse. He has also directed Chitrakatha, a documentary on Indian comics history.",
+            "verified": true,
+            "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/Alok.png",
+            "experience": "20+ years",
+            "speciality": "Comics, Graphics, Animation"
+          }
+        ]
+      },
+      {
+        "type": "success_analysis",
+        "data": [
+          {
+            "type": "ai_success_analyser",
+            "data": []
+          },
+          {
+            "type": "risk_assessment",
+            "data": [
+              {
+                "label": "market competition",
+                "value": "Medium Risk",
+                "color": "#f5aa6a",
+                "width": "279px"
+              },
+              {
+                "label": "budget management",
+                "value": "Low Risk",
+                "color": "#16a149",
+                "width": "99px"
+              },
+              {
+                "label": "audience appeal",
+                "value": "Very Low Risk",
+                "color": "#16a149",
+                "width": "16px"
+              },
+              {
+                "label": "distribution risk",
+                "value": "Low Risk",
+                "color": "#16a149",
+                "width": "135px"
+              },
+              {
+                "label": "technology risk",
+                "value": "Very Low Risk",
+                "color": "#16a149",
+                "width": "30px"
+              }
+            ]
+          },
+          {
+            "type": "ai_insights",
+            "data": []
+          },
+          {
+            "type": "ai_analysis_report",
+            "data": {
+              "updated": "10/10/2025",
+              "link": "#"
+            }
+          }
+        ]
+      },
+      {
+        "type": "project_updates",
+        "data": [
+          {
+            "title": "Editor Confirmed",
+            "date": "August 2, 2025",
+            "badge": "Milestone",
+            "description": "We have secured renowned editor Ron Marz for this Comic."
+          },
+          {
+            "title": "Writing Complete",
+            "date": "September 8, 2025",
+            "badge": "Development",
+            "description": "Alok has completed the final draft of writing for this Comic."
+          },
+          {
+            "title": "Designing Version 1 completed",
+            "date": "September 22, 2025",
+            "badge": "Development",
+            "description": "Our Design partner has completed the first draft of character and plot design for this Comic."
+          }
+        ]
+      },
+      {
+        "type": "community_discussion_test",
+        "data": [
+          {
+            "name": "Alex Chen",
+            "role": "Investor",
+            "time": "2hrs ago",
+            "verified": true,
+            "text": "What an amazing film, absolutely thrilled. Would recommend to all!",
+            "likes": 24,
+            "replyIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/88FNMtxcJZ.png",
+            "commentsIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/UPa4DJek8F.png",
+            "avatar": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/sivZOX9rV6.png"
+          },
+          {
+            "name": "Hana Roberts",
+            "role": "Investor",
+            "time": "2hrs ago",
+            "verified": true,
+            "text": "What an amazing film, absolutely thrilled. Would recommend to all!",
+            "likes": 24,
+            "replyIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/33PgS0ePNr.png",
+            "commentsIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/oOCFgXC218.png",
+            "avatar": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/Ahvb5J74tu.png"
+          },
+          {
+            "name": "Rozalia",
+            "role": "Investor",
+            "time": "2hrs ago",
+            "verified": true,
+            "text": "What an amazing film, absolutely thrilled. Would recommend to all!",
+            "likes": 24,
+            "replyIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/SuHvKO5eej.png",
+            "commentsIcon": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/oOCFgXC218.png",
+            "avatar": "https://codia-f2c.s3.us-west-1.amazonaws.com/image/2025-09-15/BNqF9Oojs4.png"
+          }
+        ]
+      },
+      {
+        "type": "faq",
+        "data": [
+          {
+            "question": "Can I invest directly as an individual?",
+            "answer": "Yes, subject to minimum investment terms."
+          },
+          {
+            "question": "What are the primary revenue channels?",
+            "answer": "Comic sales, collectibles, Character IPs"
+          },
+          {
+            "question": "How is historical accuracy ensured?",
+            "answer": "Expert historical consultants engaged through all phases."
+          }
+        ]
+      }
+    ]
+  }
+]
