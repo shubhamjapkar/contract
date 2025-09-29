@@ -15,7 +15,6 @@ import { WalletProvider } from "./components/provider/WalletProvider.tsx";
 const queryClient = new QueryClient();
 
 function App() {
-
   return (
         <WagmiConfig config={wagmiConfig}>
           <QueryClientProvider client={queryClient}>
