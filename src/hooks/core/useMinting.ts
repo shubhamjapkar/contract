@@ -83,29 +83,27 @@ export function useMinting() {
 
     const { writeAsync: approveUSDC } = useContractWrite(approvalConfig);
 
-    // Mint setup (claim)
-    const { config: claimConfig } = usePrepareContractWrite({
+    // Mint setup (claim) - using recklesslySetUnpreparedArgs for dynamic params
+    const { writeAsync: claimNFT } = useContractWrite({
         address: CONFIG.CINEFI_NFT_ADDRESS as `0x${string}`,
         abi: CineFiNFTABI,
-        functionName: 'getTotalTiers',
-        args: [address, CONFIG.CINEFI_NFT_ADDRESS],
-        enabled: false,
+        functionName: 'claimNFT',
+        mode: 'recklesslyUnprepared', // Use unprepared mode for dynamic args
     });
 
-
-    console.log(claimConfig, "___claimConfig___")
-    const { writeAsync: claimNFT } = useContractWrite(claimConfig);
-
-    // Mint setup (paid)
-    const { config: mintConfig } = usePrepareContractWrite({
+    // Mint setup (paid) - using recklesslySetUnpreparedArgs for dynamic params
+    const { writeAsync: mintTier } = useContractWrite({
         address: CONFIG.CINEFI_NFT_ADDRESS as `0x${string}`,
         abi: CineFiNFTABI,
         functionName: 'mintTier',
-        args: [[], [], []], // Will be set dynamically
-        enabled: false, // Only enabled when ready to mint
+        mode: 'recklesslyUnprepared', // Use unprepared mode for dynamic args
     });
 
-    const { writeAsync: mintTier } = useContractWrite(mintConfig);
+    // Debug logging
+    console.log('mintTier available:', !!mintTier);
+    console.log('claimNFT available:', !!claimNFT);
+    console.log('CONFIG.CINEFI_NFT_ADDRESS:', CONFIG.CINEFI_NFT_ADDRESS);
+    console.log('address:', address);
 
     /**
      * Calculate total cost for paid minting
@@ -152,8 +150,14 @@ export function useMinting() {
 
                 const totalCost = calculateTotalCost(tierIds, quantities, params.tierPrices);
 
-                const currentAllowance = usdcAllowance as ethers.BigNumber || ethers.BigNumber.from(0);
-                const currentBalance = usdcBalance as ethers.BigNumber || ethers.BigNumber.from(0);
+                const currentAllowance =
+                    usdcAllowance !== undefined && usdcAllowance !== null
+                        ? ethers.BigNumber.from(usdcAllowance.toString())
+                        : ethers.BigNumber.from(0);
+                const currentBalance =
+                    usdcBalance !== undefined && usdcBalance !== null
+                        ? ethers.BigNumber.from(usdcBalance.toString())
+                        : ethers.BigNumber.from(0);
 
                 // Check balance
                 if (currentBalance.lt(totalCost)) {
@@ -212,9 +216,17 @@ export function useMinting() {
 
                 info('Minting NFTs', 'Executing mint transaction...');
 
+                // Debug the parameters being passed
+                console.log('Mint parameters:', { tierIds, quantities, merkleProofs });
+                console.log('Parameter lengths:', { 
+                    tierIdsLength: tierIds.length, 
+                    quantitiesLength: quantities.length, 
+                    merkleProofsLength: merkleProofs.length 
+                });
+
                 // @ts-ignore
                 tx = await mintTier({
-                    recklesslySetUnpreparedArgs: [tierIds, quantities, merkleProofs]
+                    args: [tierIds, quantities, merkleProofs]
                 });
             }
 

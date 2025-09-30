@@ -2,7 +2,7 @@ import CineFiNFTABI from '../../abi/cinefi-nft-abi.json';
 import USDCABI from '../../abi/usdc-abi.json';
 
 export const CONTRACTS = {
-    CINEFI_NFT: '0x4A2FBBB4F943B84e9A587887d59292d58b266459' as const,
+    CINEFI_NFT: '0xFaa99009C32E9F9525506cc0Fc8e25999443c52C' as const,
     USDC: '0x036CbD53842c5426634e7929541eC2318f3dCF7e' as const,
 } as const;
 
