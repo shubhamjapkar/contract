@@ -32,7 +32,7 @@ export function useWhitelist() {
     // Create provider for read-only contract operations
     const provider = useRef(
         new ethers.providers.JsonRpcProvider(
-            import.meta.env.VITE_BASE_SEPOLIA_RPC || 'https://sepolia.base.org'
+            import.meta.env.VITE_BASE_SEPOLIA_RPC || ''
         )
     ).current;
 

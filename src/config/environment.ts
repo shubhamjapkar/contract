@@ -1,15 +1,15 @@
 // export const CONFIG = {
 //     // API Configuration
-//     ADMIN_API_URL: import.meta.env.VITE_ADMIN_API_URL || 'https://cinefi-admin-production.up.railway.app',
+//     ADMIN_API_URL: import.meta.env.VITE_ADMIN_API_URL || '',
 //     ADMIN_API_KEY: import.meta.env.VITE_ADMIN_API_KEY || '',
 //
 //     // Smart Contract Addresses
-//     CINEFI_NFT_ADDRESS: import.meta.env.VITE_NFT_CONTRACT_ADDRESS || '0xFaa99009C32E9F9525506cc0Fc8e25999443c52C',
-//     USDC_ADDRESS: import.meta.env.VITE_USDC_ADDRESS || '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
+//     CINEFI_NFT_ADDRESS: import.meta.env.VITE_NFT_CONTRACT_ADDRESS || '',
+//     USDC_ADDRESS: import.meta.env.VITE_USDC_ADDRESS || '',
 //
 //     // Network Configuration (Base Sepolia)
 //     CHAIN_ID: 84532,
-//     RPC_URL: import.meta.env.VITE_RPC_URL || 'https://sepolia.base.org',
+//     RPC_URL: import.meta.env.VITE_RPC_URL || '',
 //     BLOCK_EXPLORER: 'https://sepolia.basescan.org',
 //
 //     // UI Configuration
@@ -59,17 +59,17 @@
 
 export const CONFIG = {
     // API Configuration
-    ADMIN_API_URL: import.meta.env.VITE_ADMIN_API_URL || 'https://cinefi-admin-production.up.railway.app',
-    ADMIN_API_KEY: import.meta.env.VITE_ADMIN_API_KEY || 'a35f4275-5fb1-4b46-b8a7-4bc93a77ec81',
+    ADMIN_API_URL: import.meta.env.VITE_ADMIN_API_URL || '',
+    ADMIN_API_KEY: import.meta.env.VITE_ADMIN_API_KEY || '',
 
     // Smart Contract Addresses
-    CINEFI_NFT_ADDRESS: import.meta.env.VITE_NFT_CONTRACT_ADDRESS || '0xFaa99009C32E9F9525506cc0Fc8e25999443c52C',
-    USDC_ADDRESS: import.meta.env.VITE_USDC_ADDRESS || '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
+    CINEFI_NFT_ADDRESS: import.meta.env.VITE_NFT_CONTRACT_ADDRESS || '',
+    USDC_ADDRESS: import.meta.env.VITE_USDC_ADDRESS || '',
 
     // Network Configuration (Base Sepolia)
     CHAIN_ID: 84532,
-    RPC_URL: import.meta.env.VITE_RPC_URL || 'https://sepolia.base.org',
-    BLOCK_EXPLORER: 'https://sepolia.basescan.org',
+    RPC_URL: import.meta.env.VITE_RPC_URL || '',
+    BLOCK_EXPLORER: import.meta.env.VITE_BLOCK_EXPLORER || '',
 
     // UI Configuration
     MAX_RETRY_ATTEMPTS: 3,

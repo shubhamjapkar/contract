@@ -51,7 +51,7 @@ export function useMinting() {
 
     const provider = useRef(
         new ethers.providers.JsonRpcProvider(
-            import.meta.env.VITE_BASE_SEPOLIA_RPC || 'https://sepolia.base.org'
+            import.meta.env.VITE_BASE_SEPOLIA_RPC || ''
         )
     ).current;
 
@@ -194,20 +194,19 @@ export function useMinting() {
             let tx: any;
 
             if (isClaimPhase) {
-                console.log(claimNFT, "___claimNFT___")
-                if (!claimNFT) throw new Error('Claim function not available');
+                // if (!claimNFT) throw new Error('Claim function not available');
 
                 info('Claiming NFTs', 'Executing claim transaction...');
 
                 // @ts-ignore
-                tx = await claimNFT({
-                    recklesslySetUnpreparedArgs: [tierIds, quantities, merkleProofs]
-                });
+                // tx = await claimNFT({
+                //     recklesslySetUnpreparedArgs: [tierIds, quantities, merkleProofs]
+                // });
 
-                // const signer = walletClientToSigner(walletClient);
-                // if (!signer) throw new Error('Signer not available');
-                //
-                // tx = await getContractService(provider).claimNFT(signer, tierIds, quantities, merkleProofs);
+                const signer = walletClientToSigner(walletClient);
+                if (!signer) throw new Error('Signer not available');
+
+                tx = await getContractService(provider).claimNFT(signer, tierIds, quantities, merkleProofs);
             } else {
                 if (!mintTier) throw new Error('Mint function not available');
 
