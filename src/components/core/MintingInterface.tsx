@@ -12,6 +12,122 @@ import { SystemHealth } from '../feedback/SystemHealth.tsx';
 import { MintForm } from '../forms/MintForm.tsx';
 import { OwnerInterface } from './OwnerInterface.tsx';
 import { WhitelistChecker } from './WhitelistChecker.tsx';
+import apiHandler from "../../services/apiHandler.ts";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+
+function CustomConnect() {
+    const [lastConnectedState, setLastConnectedState] = useState<{connected: boolean, account: any, chain: any} | any>(null);
+    const [processedAccounts, setProcessedAccounts] = useState<Set<string>>(new Set());
+
+    // Function to check user and create if needed
+    const handleUserCheck = async (account: any, chain: any) => {
+        if (!account?.address) return;
+
+        const walletId = account.address;
+
+        // Avoid processing the same account multiple times
+        if (processedAccounts.has(walletId)) return;
+        setProcessedAccounts(prev => new Set(prev).add(walletId));
+
+        console.log('🔍 Checking if user exists in database...');
+        console.log('Wallet ID:', walletId);
+
+        try {
+            const userExists = await apiHandler.checkUserExists(walletId);
+
+            if (userExists) {
+                console.log('✅ User exists in database');
+            } else {
+                console.log('❌ User not found in database, creating new user...');
+
+                // Extract balance information
+                const balanceSymbol = chain?.name === 'Ethereum' ? 'ETH' : 'TOKEN';
+                const displayBalance = account.balance || '0';
+
+                console.log('📝 Creating user with data:');
+                console.log('- Wallet ID:', walletId);
+                console.log('- Balance Symbol:', balanceSymbol);
+                console.log('- Display Balance:', displayBalance);
+
+                const userCreated = await apiHandler.createUser(walletId, balanceSymbol, displayBalance);
+
+                if (userCreated) {
+                    console.log('🎉 New user created successfully!');
+                } else {
+                    console.error('💥 Failed to create user');
+                }
+            }
+        } catch (error) {
+            console.error('❌ Error during user check/creation:', error);
+        }
+    };
+
+    return (
+        <ConnectButton.Custom>
+            {({ account, chain, openConnectModal, openAccountModal, mounted }) => {
+                const ready = mounted;
+                const connected = ready && account && chain;
+
+                // Log wallet connection data when state changes
+                const currentState = { connected, account, chain };
+                if (JSON.stringify(currentState) !== JSON.stringify(lastConnectedState)) {
+                    setLastConnectedState(currentState);
+
+                    if (connected) {
+                        console.log('🔗 WALLET CONNECTION DATA:');
+                        console.log('==========================================');
+                        console.log('Connected:', connected);
+                        console.log('Ready:', ready);
+                        console.log('Mounted:', mounted);
+
+                        if (account) {
+                            console.log('📱 ACCOUNT DATA:');
+                            console.log('- Address:', account.address);
+                            console.log('- Display Name:', account.displayName);
+                            console.log('- ENS Name:', account.ensName);
+                            console.log('- ENS Avatar:', account.ensAvatar);
+                            console.log('- Has Pending Transactions:', account.hasPendingTransactions);
+                            console.log('- Full Account Object:', account);
+                        }
+
+                        if (chain) {
+                            console.log('⛓️ CHAIN DATA:');
+                            console.log('- Chain ID:', chain.id);
+                            console.log('- Chain Name:', chain.name);
+                            console.log('- Has Icon:', chain.hasIcon);
+                            console.log('- Icon URL:', chain.iconUrl);
+                            console.log('- Icon Background:', chain.iconBackground);
+                            console.log('- Unsupported:', chain.unsupported);
+                            console.log('- Full Chain Object:', chain);
+                        }
+
+                        console.log('==========================================');
+
+                        // Check user existence and create if needed
+                        handleUserCheck(account, chain);
+                    } else {
+                        console.log('🔴 WALLET DISCONNECTED');
+                        // Clear processed accounts when disconnected
+                        setProcessedAccounts(new Set());
+                    }
+                }
+
+                if (connected) {
+                    return <button
+                        onClick={openAccountModal}
+                        className={"text-[12px] leading-[14px] font-medium uppercase py-[14px] px-[18px] text-[#EFEFEF] bg-transparent border border-[#4D4D53] cursor-pointer"}>
+                        {account.displayName}
+                    </button>
+                }
+
+                return <button onClick={openConnectModal} className={"text-[12px] leading-[14px] font-medium uppercase py-[14px] px-[18px] text-[#EFEFEF] bg-[#FE3D5B] whitespace-nowrap flex gap-1"}>
+                    Connect
+                    <span className={"hidden md:block"}>Wallet</span>
+                </button>
+            }}
+        </ConnectButton.Custom>
+    );
+}
 
 export const MintingInterface: React.FC = () => {
     const { address, isConnected } = useAccount();
@@ -155,6 +271,11 @@ export const MintingInterface: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black pt-[100px]">
+
+            <div className={"flex justify-center items-center w-full"}>
+                <CustomConnect/>
+            </div>
+
             {/* Notification System */}
             <NotificationCenter />
 

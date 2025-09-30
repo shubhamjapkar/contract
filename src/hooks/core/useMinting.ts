@@ -87,13 +87,13 @@ export function useMinting() {
     const { config: claimConfig } = usePrepareContractWrite({
         address: CONFIG.CINEFI_NFT_ADDRESS as `0x${string}`,
         abi: CineFiNFTABI,
-        functionName: 'claimNFT',
-        args: [[], [], []],
+        functionName: 'getTotalTiers',
+        args: [address, CONFIG.CINEFI_NFT_ADDRESS],
         enabled: false,
     });
 
 
-    console.log(approvalConfig, claimConfig, "___claimConfig___")
+    console.log(claimConfig, "___claimConfig___")
     const { writeAsync: claimNFT } = useContractWrite(claimConfig);
 
     // Mint setup (paid)
@@ -194,19 +194,20 @@ export function useMinting() {
             let tx: any;
 
             if (isClaimPhase) {
-                // if (!claimNFT) throw new Error('Claim function not available');
+                console.log(claimNFT, "___claimNFT___")
+                if (!claimNFT) throw new Error('Claim function not available');
 
                 info('Claiming NFTs', 'Executing claim transaction...');
 
                 // @ts-ignore
-                // tx = await claimNFT({
-                //     recklesslySetUnpreparedArgs: [tierIds, quantities, merkleProofs]
-                // });
+                tx = await claimNFT({
+                    recklesslySetUnpreparedArgs: [tierIds, quantities, merkleProofs]
+                });
 
-                const signer = walletClientToSigner(walletClient);
-                if (!signer) throw new Error('Signer not available');
-
-                tx = await getContractService(provider).claimNFT(signer, tierIds, quantities, merkleProofs);
+                // const signer = walletClientToSigner(walletClient);
+                // if (!signer) throw new Error('Signer not available');
+                //
+                // tx = await getContractService(provider).claimNFT(signer, tierIds, quantities, merkleProofs);
             } else {
                 if (!mintTier) throw new Error('Mint function not available');
 
