@@ -35,6 +35,7 @@ function walletClientToSigner(walletClient: any) {
 export interface MintParams {
     tierIds: number[];
     quantities: number[];
+    allocations: number[];
     merkleProofs: string[][];
     tierPrices?: ethers.BigNumber[]; // Add tier prices for USDC calculation
 }
@@ -129,7 +130,7 @@ export function useMinting() {
             throw new Error('Not ready to mint: wallet not connected or whitelist not loaded');
         }
 
-        const { tierIds, quantities, merkleProofs } = params;
+        const { tierIds, quantities, allocations, merkleProofs } = params;
         const isClaimPhase = validation.currentPhase === MintPhase.CLAIM;
 
         setTxHash(null);
@@ -139,7 +140,7 @@ export function useMinting() {
             info('Mint Started', 'Preparing your mint transaction...');
 
             // Validate inputs
-            if (tierIds.length !== quantities.length || tierIds.length !== merkleProofs.length) {
+            if (tierIds.length !== quantities.length || tierIds.length !== allocations.length || tierIds.length !== merkleProofs.length) {
                 throw new Error('Array lengths must match');
             }
 
@@ -152,8 +153,8 @@ export function useMinting() {
 
                 const totalCost = calculateTotalCost(tierIds, quantities, params.tierPrices);
 
-                const currentAllowance = usdcAllowance as ethers.BigNumber || ethers.BigNumber.from(0);
-                const currentBalance = usdcBalance as ethers.BigNumber || ethers.BigNumber.from(0);
+                const currentAllowance = usdcAllowance ? ethers.BigNumber.from(usdcAllowance.toString()) : ethers.BigNumber.from(0);
+                const currentBalance = usdcBalance ? ethers.BigNumber.from(usdcBalance.toString()) : ethers.BigNumber.from(0);
 
                 // Check balance
                 if (currentBalance.lt(totalCost)) {
@@ -162,9 +163,8 @@ export function useMinting() {
 
                 // Check and handle allowance
                 if (currentAllowance.lt(totalCost)) {
-                    if (!approveUSDC) {
-                        throw new Error('USDC approval not available');
-                    }
+                    const signer = walletClientToSigner(walletClient);
+                    if (!signer) throw new Error('Signer not available');
 
                     warning(
                         'USDC Approval Required',
@@ -173,13 +173,9 @@ export function useMinting() {
 
                     info('USDC Approval', 'Approving USDC spending...');
 
-                    // @ts-ignore
-                    const approveTx = await approveUSDC({
-                        recklesslySetUnpreparedArgs: [CONFIG.CINEFI_NFT_ADDRESS, totalCost]
-                    });
+                    const approveTx = await getContractService(provider).approveUSDC(signer, CONFIG.CINEFI_NFT_ADDRESS, totalCost);
 
                     info('Approval Submitted', 'Waiting for USDC approval confirmation...');
-                    // @ts-ignore
                     const approvalReceipt = await approveTx.wait();
 
                     if (approvalReceipt.status !== 1) {
@@ -196,8 +192,6 @@ export function useMinting() {
             if (isClaimPhase) {
                 // if (!claimNFT) throw new Error('Claim function not available');
 
-                info('Claiming NFTs', 'Executing claim transaction...');
-
                 // @ts-ignore
                 // tx = await claimNFT({
                 //     recklesslySetUnpreparedArgs: [tierIds, quantities, merkleProofs]
@@ -206,16 +200,16 @@ export function useMinting() {
                 const signer = walletClientToSigner(walletClient);
                 if (!signer) throw new Error('Signer not available');
 
-                tx = await getContractService(provider).claimNFT(signer, tierIds, quantities, merkleProofs);
+                info('Claiming NFTs', 'Executing claim transaction...');
+
+                tx = await getContractService(provider).claimNFT(signer, tierIds, quantities, allocations, merkleProofs);
             } else {
-                if (!mintTier) throw new Error('Mint function not available');
+                const signer = walletClientToSigner(walletClient);
+                if (!signer) throw new Error('Signer not available');
 
                 info('Minting NFTs', 'Executing mint transaction...');
 
-                // @ts-ignore
-                tx = await mintTier({
-                    recklesslySetUnpreparedArgs: [tierIds, quantities, merkleProofs]
-                });
+                tx = await getContractService(provider).mintTier(signer, tierIds, quantities, allocations, merkleProofs);
             }
 
             setTxHash(tx.hash);

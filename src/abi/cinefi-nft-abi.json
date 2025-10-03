@@ -707,6 +707,11 @@
         "type": "uint256[]"
       },
       {
+        "internalType": "uint256[]",
+        "name": "allocations",
+        "type": "uint256[]"
+      },
+      {
         "internalType": "bytes32[][]",
         "name": "merkleProofs",
         "type": "bytes32[][]"
@@ -1075,6 +1080,11 @@
         "type": "uint256[]"
       },
       {
+        "internalType": "uint256[]",
+        "name": "allocations",
+        "type": "uint256[]"
+      },
+      {
         "internalType": "bytes32[][]",
         "name": "merkleProofs",
         "type": "bytes32[][]"
@@ -1199,11 +1209,6 @@
         "internalType": "uint256[]",
         "name": "quantities",
         "type": "uint256[]"
-      },
-      {
-        "internalType": "string[]",
-        "name": "tokenURIs",
-        "type": "string[]"
       }
     ],
     "name": "ownerMint",

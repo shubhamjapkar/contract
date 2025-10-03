@@ -65,12 +65,32 @@ export class ContractService {
         }
     }
 
-    async claimNFT(signer: ethers.Signer, tierIds: number[], quantities: number[], merkleProofs: string[][]) {
+    async claimNFT(signer: ethers.Signer, tierIds: number[], quantities: number[], allocations: number[], merkleProofs: string[][]) {
         try {
             const contracts = this.getContracts(signer);
-            return await contracts.nft.claimNFT(tierIds, quantities, merkleProofs);
+            return await contracts.nft.claimNFT(tierIds, quantities, allocations, merkleProofs);
         } catch (error) {
             console.error('Error claiming NFT:', error);
+            throw error;
+        }
+    }
+
+    async approveUSDC(signer: ethers.Signer, spender: string, amount: ethers.BigNumber) {
+        try {
+            const contracts = this.getContracts(signer);
+            return await contracts.usdc.approve(spender, amount);
+        } catch (error) {
+            console.error('Error approving USDC:', error);
+            throw error;
+        }
+    }
+
+    async mintTier(signer: ethers.Signer, tierIds: number[], quantities: number[], allocations: number[], merkleProofs: string[][]) {
+        try {
+            const contracts = this.getContracts(signer);
+            return await contracts.nft.mintTier(tierIds, quantities, allocations, merkleProofs);
+        } catch (error) {
+            console.error('Error minting NFT:', error);
             throw error;
         }
     }
