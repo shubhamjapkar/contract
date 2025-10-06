@@ -104,6 +104,7 @@ export function useWhitelist() {
             }
 
             setValidation(validationData);
+            console.log("ValidationData", validationData);
         } catch (err) {
             console.log(err, "____err____")
             const message = err instanceof Error ? err.message : 'Failed to fetch whitelist status';

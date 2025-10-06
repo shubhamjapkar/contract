@@ -27,6 +27,8 @@ function decodeRevert(abi: any[], err: any): string | null {
     const data: string | undefined =
         err?.error?.data || err?.data || err?.receipt?.revertReason || err?.reason;
 
+    // console.log(err);
+
     if (!data || typeof data !== 'string' || !data.startsWith('0x')) return null;
 
     // Standard Error(string)
@@ -63,6 +65,7 @@ export interface MintParams {
     tierIds: number[];
     quantities: number[];
     merkleProofs: string[][];
+    allocations: number[];
     tierPrices?: ethers.BigNumber[]; // for paid phases (USDC)
 }
 function toBN(x: any | undefined): BigNumber {
@@ -174,7 +177,7 @@ export function useMinting() {
             if (!signer) {
                 throw new Error('Signer not available (connect wallet and approve access)');
             }
-            const { tierIds, quantities, merkleProofs, tierPrices } = params;
+            const { tierIds, quantities, merkleProofs, tierPrices, allocations } = params;
             const isClaimPhase = validation.currentPhase === MintPhase.CLAIM;
 
 
@@ -183,7 +186,8 @@ export function useMinting() {
                 tierIds.length === 0 ||
                 quantities.length === 0 ||
                 tierIds.length !== quantities.length ||
-                merkleProofs.length !== tierIds.length
+                merkleProofs.length !== tierIds.length ||
+                allocations.length !== tierIds.length
             ) {
                 throw new Error('Invalid inputs: mismatched array lengths or empty arrays.');
             }
@@ -193,6 +197,7 @@ export function useMinting() {
             const tierIdsBN = tierIds.map((n) => BigNumber.from(n));
             const quantitiesBN = quantities.map((n) => BigNumber.from(n));
             const proofsHex = merkleProofs as `0x${string}`[][];
+            const allocationsBN = allocations.map((n) => BigNumber.from(n));
 
 
 
@@ -206,6 +211,31 @@ export function useMinting() {
             setTxHash(null);
             setLoading(true);
 
+            let totalCost = calculateTotalCost(tierIds, quantities, tierPrices);
+            totalCost = toBN(totalCost);
+            console.log("Total Cost", totalCost, quantities, tierPrices);
+            // console.log('=== EXACT PARAMETERS ===');
+            // console.log('tierIdsBN:', tierIdsBN);
+            // console.log('tierIdsBN values:', tierIdsBN.map(t => t.toString()));
+            // console.log('tierIdsBN hex:', tierIdsBN.map(t => t.toHexString()));
+
+            // console.log('quantitiesBN:', quantitiesBN);
+            // console.log('quantitiesBN values:', quantitiesBN.map(q => q.toString()));
+
+            // console.log('allocationsBN:', allocationsBN);
+            // console.log('allocationsBN values:', allocationsBN.map(a => a.toString()));
+
+            // console.log('proofsHex:', proofsHex);
+            // console.log('proofsHex count:', proofsHex.length);
+            // console.log('Each proof:');
+            // proofsHex.forEach((proof, i) => {
+            //     console.log(`  [${i}]: ${proof}`);
+            //     console.log(`       Length: ${proof.length} (should be 66 for 0x + 64 hex chars)`);
+            // });
+
+            // console.log('address:', address);
+            // console.log('address checksum:', ethers.utils.getAddress(address));
+
             try {
                 info('Mint Started', 'Preparing your mint transaction…');
 
@@ -215,14 +245,14 @@ export function useMinting() {
                         throw new Error('Tier prices required for paid minting phases');
                     }
 
-                    let totalCost = calculateTotalCost(tierIds, quantities, tierPrices);
-                    totalCost = toBN(totalCost);
+                    // let totalCost = calculateTotalCost(tierIds, quantities, tierPrices);
+                    // totalCost = toBN(totalCost);
                     let currentAllowance =
                         (usdcAllowance as ethers.BigNumber | undefined) ?? ethers.BigNumber.from(0);
                     currentAllowance = toBN(currentAllowance);
                     let currentBalance =
                         (usdcBalance as ethers.BigNumber | undefined) ?? ethers.BigNumber.from(0);
-                    console.log(currentBalance, currentAllowance, totalCost);
+                    console.log("Allowance", currentBalance, currentAllowance, totalCost);
                     currentBalance = toBN(currentBalance);
                     if ((currentBalance as ethers.BigNumber).lt(totalCost as ethers.BigNumber)) {
                         throw new Error(
@@ -256,29 +286,55 @@ export function useMinting() {
                 // Execute mint
                 let tx: any;
                 if (isClaimPhase) {
-                    console.log('Claiming NFTs', 'Executing claim transaction…');
-                    try {
-                        await nft.callStatic.claimNFT(tierIdsBN, quantitiesBN, proofsHex, { from: address });
-                    } catch (e: any) {
-                        const reason = decodeRevert(CineFiNFTABI as any[], e) || 'execution reverted';
-                        throw new Error(`Claim simulation failed: ${reason}`);
-                    }
+                    
+                    // for (let i = 0; i < tierIds.length; i++) {
+                    //     const claimedAmount = await nft.claimReserved(tierIds[i]);
+                    //     console.log('Claimable amount', claimedAmount.toNumber() );
+                    // }
+                    console.log(' Going to Claim NFTs', 'Executing claim transaction…');
+                    // try {
+                    //     await nft.callStatic.claimNFT(tierIds, quantities, allocations, proofsHex, { from: address });
+                    // } catch (error: any) {
+                    //     const reason = decodeRevert(CineFiNFTABI as any[], error) || 'execution reverted';
+                    //     console.log('Static call failed');
+                    //     throw new Error(`In Claim simulation failed: ${reason}`);
+                    // }
 
                     // Estimate gas (helps UX and avoids some wallets underestimating)
                     let gasLimit;
                     try {
-                        gasLimit = await nft.estimateGas.claimNFT(tierIdsBN, quantitiesBN, proofsHex, { from: address });
+                        gasLimit = await nft.estimateGas.claimNFT(tierIds, quantities, allocations, proofsHex);
                     } catch (e: any) {
-                        const reason = decodeRevert(CineFiNFTABI as any[], e) || 'execution reverted';
-                        throw new Error(`Cannot estimate gas: ${reason}`);
+                        // console.warn('Gas estimation failed, using manual limit');
+                        gasLimit = ethers.BigNumber.from('500000'); // Fallback gas limit
+
+                        // Try to get more error details
+                        try {
+                            await nft.callStatic.claimNFT(
+                                tierIdsBN,
+                                quantitiesBN,
+                                allocationsBN,
+                                proofsHex,
+                                {
+                                    from: address,
+                                    gasLimit: gasLimit
+                                }
+                            );
+                        } catch (staticError) {
+                            console.error('Static call with gas limit also failed:', staticError);
+                            throw staticError;
+                        }
+                        gasLimit: gasLimit.mul(110).div(100)
+                        // const reason = decodeRevert(CineFiNFTABI as any[], e) || 'execution reverted';
+                        // throw new Error(`Cannot estimate gas: ${reason}`);
                     }
 
-                    info('Claiming NFTs', 'Executing claim transaction…');
-                    tx = await nft.claimNFT(tierIdsBN, quantitiesBN, proofsHex, { gasLimit });
+                    info('Claiming NFTs', 'Executing claim transaction…', { gasLimit });
+                    tx = await nft.claimNFT(tierIds, quantities, allocations, proofsHex, { from: address, gasLimit: gasLimit });
                 } else {
                     console.log('Minting NFTs', 'Executing mint transaction…');
                     try {
-                        await nft.callStatic.mintTier(tierIdsBN, quantitiesBN, proofsHex, { from: address });
+                        await nft.callStatic.mintTier(tierIds, quantities, allocations, proofsHex, { from: address });
                     } catch (e: any) {
                         const reason = decodeRevert(CineFiNFTABI as any[], e) || 'execution reverted';
                         throw new Error(`Claim simulation failed: ${reason}`);
@@ -287,12 +343,12 @@ export function useMinting() {
                     // Estimate gas (helps UX and avoids some wallets underestimating)
                     let gasLimit;
                     try {
-                        gasLimit = await nft.estimateGas.mintTier(tierIdsBN, quantitiesBN, proofsHex, { from: address });
+                        gasLimit = await nft.estimateGas.mintTier(tierIds, quantities, allocations, proofsHex, { from: address });
                     } catch (e: any) {
                         const reason = decodeRevert(CineFiNFTABI as any[], e) || 'execution reverted';
                         throw new Error(`Cannot estimate gas: ${reason}`);
                     }
-                    tx = await nft.mintTier(tierIdsBN, quantitiesBN, proofsHex, {gasLimit});
+                    tx = await nft.mintTier(tierIdsBN, quantitiesBN, allocationsBN, proofsHex, { gasLimit });
 
                     info('Claiming NFTs', 'Executing claim transaction…');
                 }

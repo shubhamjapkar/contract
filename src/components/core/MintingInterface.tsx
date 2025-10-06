@@ -151,6 +151,7 @@ export const MintingInterface: React.FC = () => {
 
         const tierIds = Array.from(selectedTiers.keys());
         const quantities = Array.from(selectedTiers.values());
+        const allocations: number[] = [];
 
         try {
             const merkleProofs: string[][] = [];
@@ -168,10 +169,12 @@ export const MintingInterface: React.FC = () => {
                     entry.phaseId,
                     entry.allowedQuantity
                 );
+                console.log('Proof', proof);
                 merkleProofs.push(proof);
+                allocations.push(entry.allowedQuantity);
             }
 
-            await mint({ tierIds, quantities, merkleProofs, tierPrices });
+            await mint({ tierIds, quantities, merkleProofs, tierPrices, allocations });
             setSelectedTiers(new Map());
         } catch (error) {
             console.error('Mint error:', error);
