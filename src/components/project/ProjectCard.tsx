@@ -246,9 +246,12 @@ export default function ProjectCard() {
         return <PageNotFound/>
     }
 
-    return <div className="flex flex-col">
-        <section className="flex w-full max-w-[1350px] m-auto gap-6 px-4 lg:px-0 pb-10">
-            <RightSideBar />
-        </section>
-    </div>
+    return <HeaderFooter isFixedHeader={false} isFixedFooter={true}>
+        <div className="flex flex-col">
+            <section className="flex w-full max-w-[1350px] m-auto gap-6 px-4 lg:px-0 pb-10">
+                <RightSideBar />
+            </section>
+        </div>
+    </HeaderFooter>
+
 }

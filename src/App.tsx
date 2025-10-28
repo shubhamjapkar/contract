@@ -1,7 +1,5 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import './App.css'
-import Homepage from "./components/lp/Homepage.tsx";
-
 import '@rainbow-me/rainbowkit/styles.css';
 import {RainbowKitProvider} from '@rainbow-me/rainbowkit';
 import { WagmiConfig } from 'wagmi'
