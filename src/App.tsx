@@ -1,5 +1,7 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import './App.css'
+import Homepage from "./components/lp/Homepage.tsx";
+
 import '@rainbow-me/rainbowkit/styles.css';
 import {RainbowKitProvider} from '@rainbow-me/rainbowkit';
 import { WagmiConfig } from 'wagmi'
@@ -9,28 +11,30 @@ import {ScreenProvider} from "./components/provider/ScreenProvider.tsx";
 import PageNotFound from "./NotFound.tsx";
 import { wagmiConfig } from './utils/wagmi.ts';
 import chains from "./utils/wagmi.ts";
-import { ToastProvider } from 'react-toast-kit';
+import { Toaster } from 'sonner';
+import NFTPortfolioDashboard from "./components/project/ProfilePage.tsx";
 import { WalletProvider } from "./components/provider/WalletProvider.tsx";
 
 const queryClient = new QueryClient();
 
 function App() {
+
   return (
         <WagmiConfig config={wagmiConfig}>
           <QueryClientProvider client={queryClient}>
               <RainbowKitProvider chains={chains}>
-                  <ToastProvider>
-                      <WalletProvider>
-                          <BrowserRouter>
-                              <ScreenProvider>
-                                  <Routes>
-                                      <Route path="/" element={<ProjectCard />} />
-                                      <Route path="*" element={<PageNotFound />} />
-                                  </Routes>
-                              </ScreenProvider>
-                          </BrowserRouter>
-                      </WalletProvider>
-                  </ToastProvider>
+                  <WalletProvider>
+                      <BrowserRouter>
+                          <ScreenProvider>
+                              <Routes>
+                                  <Route path="/project/:id" element={<ProjectCard />} />
+                                  <Route path="*" element={<PageNotFound />} />
+                                  <Route path="/profile" element={<NFTPortfolioDashboard />} />
+                              </Routes>
+                          </ScreenProvider>
+                      </BrowserRouter>
+                  </WalletProvider>
+                  <Toaster position="top-right" richColors closeButton theme="dark" />
               </RainbowKitProvider>
           </QueryClientProvider>
       </WagmiConfig>

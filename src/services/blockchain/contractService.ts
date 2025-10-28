@@ -65,36 +65,6 @@ export class ContractService {
         }
     }
 
-    async claimNFT(signer: ethers.Signer, tierIds: number[], quantities: number[], allocations: number[], merkleProofs: string[][]) {
-        try {
-            const contracts = this.getContracts(signer);
-            return await contracts.nft.claimNFT(tierIds, quantities, allocations, merkleProofs);
-        } catch (error) {
-            console.error('Error claiming NFT:', error);
-            throw error;
-        }
-    }
-
-    async approveUSDC(signer: ethers.Signer, spender: string, amount: ethers.BigNumber) {
-        try {
-            const contracts = this.getContracts(signer);
-            return await contracts.usdc.approve(spender, amount);
-        } catch (error) {
-            console.error('Error approving USDC:', error);
-            throw error;
-        }
-    }
-
-    async mintTier(signer: ethers.Signer, tierIds: number[], quantities: number[], allocations: number[], merkleProofs: string[][]) {
-        try {
-            const contracts = this.getContracts(signer);
-            return await contracts.nft.mintTier(tierIds, quantities, allocations, merkleProofs);
-        } catch (error) {
-            console.error('Error minting NFT:', error);
-            throw error;
-        }
-    }
-
     /**
      * Get tier information with enhanced error handling
      */
@@ -121,9 +91,9 @@ export class ContractService {
     /**
      * Get minted count with proper error handling
      */
-    async getMintedPerTier(wallet: string, tierId: number): Promise<number> {
+    async getMintedPerTierPerPhase(wallet: string, tierId: number, phaseId: number): Promise<number> {
         try {
-            const minted = await this.nftContract.getMintedPerTier(wallet, tierId);
+            const minted = await this.nftContract.getMintedPerTierPerPhase(wallet, tierId, phaseId);
             return minted.toNumber();
         } catch (error) {
             console.error('Error getting minted count:', error);
@@ -203,6 +173,7 @@ export class ContractService {
         signer: ethers.Signer,
         tierIds: number[],
         quantities: number[],
+        allocations: number[],
         merkleProofs: string[][],
         isClaimPhase: boolean
     ): Promise<ethers.BigNumber> {
@@ -213,12 +184,14 @@ export class ContractService {
                 return await contracts.nft.estimateGas.claimNFT(
                     tierIds,
                     quantities,
+                    allocations,
                     merkleProofs
                 );
             } else {
                 return await contracts.nft.estimateGas.mintTier(
                     tierIds,
                     quantities,
+                    allocations,
                     merkleProofs
                 );
             }

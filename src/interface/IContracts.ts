@@ -1,3 +1,5 @@
+import {MintPhase, WhitelistEntry} from "./api.ts";
+
 export interface ContractInfo {
     totalSupply: string;
     mintPrice: string;
@@ -20,5 +22,15 @@ export interface TokenMetadata {
     attributes: Array<{
         trait_type: string;
         value: string | number;
+    }>;
+}
+
+
+export interface IWhitelistValidation {
+    isWhitelisted: boolean;
+    currentPhase?: MintPhase;
+    entries: Array<WhitelistEntry & {
+        alreadyMinted: number;
+        remaining: number;
     }>;
 }

@@ -10,20 +10,25 @@ export function formatNumber(num: number | string): string {
     return new Intl.NumberFormat('en-US').format(parsed);
 }
 
-export function formatUSDC(amountWei: ethers.BigNumber | string): string {
+export function formatUSDC(amountWei: ethers.BigNumber | string | undefined): string {
     try {
+        // Handle undefined or null values
+        if (amountWei === undefined || amountWei === null) {
+            return '0.00';
+        }
+
         const amount = ethers.BigNumber.from(amountWei);
         const formatted = ethers.utils.formatUnits(amount, 6); // USDC has 6 decimals
         const parsed = parseFloat(formatted);
 
         if (parsed < 0.01 && parsed > 0) {
-            return '< $0.01';
+            return '0.01';
         }
 
-        return `$${formatNumber(parsed.toFixed(2))}`;
+        return `${formatNumber(parsed.toFixed(2))}`;
     } catch (error) {
         console.error('Error formatting USDC:', error);
-        return '$0.00';
+        return '0.00';
     }
 }
 

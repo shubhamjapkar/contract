@@ -3,24 +3,15 @@ import { useAccount } from 'wagmi';
 import { ethers } from 'ethers';
 import { adminAPI } from '../../services/adminAPI';
 import { getContractService } from '../../services/blockchain/contractService';
-import { useNotifications } from '../infrastructure/useNotifications.tsx';
+import { toast } from 'sonner';
 import { MintPhase, WhitelistStatus, WhitelistEntry } from '../../interface/api';
-
-interface WhitelistValidation {
-    isWhitelisted: boolean;
-    currentPhase: MintPhase;
-    entries: Array<WhitelistEntry & {
-        alreadyMinted: number;
-        remaining: number;
-    }>;
-}
+import {IWhitelistValidation} from "../../interface/IContracts.ts";
 
 export function useWhitelist() {
     const { address, isConnected } = useAccount();
-    const { error: notifyError } = useNotifications();
 
     const [whitelistStatus, setWhitelistStatus] = useState<WhitelistStatus | null>(null);
-    const [validation, setValidation] = useState<WhitelistValidation | null>(null);
+    const [validation, setValidation] = useState<IWhitelistValidation | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [lastFetch, setLastFetch] = useState<number>(0);
@@ -32,7 +23,7 @@ export function useWhitelist() {
     // Create provider for read-only contract operations
     const provider = useRef(
         new ethers.providers.JsonRpcProvider(
-            import.meta.env.VITE_BASE_SEPOLIA_RPC || ''
+            import.meta.env.VITE_RPC_URL || ''
         )
     ).current;
 
@@ -76,7 +67,7 @@ export function useWhitelist() {
             );
 
             // Calculate remaining allocations
-            const validationData: WhitelistValidation = {
+            const validationData: IWhitelistValidation = {
                 isWhitelisted: currentPhaseEntries.length > 0,
                 currentPhase,
                 entries: [],
@@ -86,10 +77,12 @@ export function useWhitelist() {
                 let alreadyMinted = 0;
 
                 try {
-                    if (currentPhase === MintPhase.CLAIM) {
+                    if (entry.phaseId === MintPhase.CLAIM) {
                         alreadyMinted = await getContractService(provider).getClaimedPerTier(address, entry.tierId);
-                    } else {
-                        alreadyMinted = await getContractService(provider).getMintedPerTier(address, entry.tierId);
+                    } else if (entry.phaseId === MintPhase.GUARANTEED) {
+                        alreadyMinted = await getContractService(provider).getMintedPerTierPerPhase(address, entry.tierId, entry.phaseId);
+                    } else if (entry.phaseId === MintPhase.FCFS) {
+                        alreadyMinted = await getContractService(provider).getMintedPerTierPerPhase(address, entry.tierId, entry.phaseId);
                     }
                 } catch (err) {
                     console.warn(`Failed to get minted count for tier ${entry.tierId}:`, err);
@@ -99,7 +92,7 @@ export function useWhitelist() {
                 validationData.entries.push({
                     ...entry,
                     alreadyMinted,
-                    remaining: Math.max(0, entry.allowedQuantity - alreadyMinted),
+                    remaining: Math.max(0, entry.allowedQuantity - alreadyMinted)
                 });
             }
 
@@ -108,12 +101,12 @@ export function useWhitelist() {
             console.log(err, "____err____")
             const message = err instanceof Error ? err.message : 'Failed to fetch whitelist status';
             setError(message);
-            notifyError('Whitelist Check Failed', message);
+            toast.error('Whitelist Check Failed', { description: message });
             console.error('Whitelist fetch error:', err);
         } finally {
             setLoading(false);
         }
-    }, [address, notifyError, provider]);
+    }, [address, provider]);
 
     /**
      * Get merkle proof with validation
@@ -130,10 +123,10 @@ export function useWhitelist() {
         try {
             return await adminAPI.getMerkleProof(address, tierId, phaseId, allowedQuantity);
         } catch (error) {
-            notifyError('Proof Generation Failed', 'Failed to generate merkle proof for minting');
+            toast.error('Proof Generation Failed', { description: 'Failed to generate merkle proof for minting' });
             throw error;
         }
-    }, [address, notifyError]);
+    }, [address]);
 
     /**
      * Check if user can mint specific quantities

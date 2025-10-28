@@ -2,7 +2,8 @@
   {
     "id": "8w98e389e2ee3893rr2w8927e978we79347ee05342",
     "name": "Swari Agra",
-    "endDate": "19 / 08 / 2025",
+    "startData": "09/10/2025",
+    "endDate": "18/10/2025",
     "data": [
       {
         "type": "hero_section",
@@ -10,7 +11,7 @@
           "name": "Swari Agra",
           "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/Swari+Agra+Poster.jpg",
           "smallImage": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/IMG-20250903-WA0002.jpg",
-          "description": "Not an Escape, but a Strike on Agra!",
+          "author": "Abhishek Varma",
           "rating": "9.2",
           "category": ["Trending", "Comic", "Action"],
           "fundingInProgress": [
@@ -36,7 +37,7 @@
       {
         "type": "project_overview",
         "data": {
-            "loglineText": "A daring retelling of a legendary leader’s journey to Agra, where a bold political move and a masterful escape transform into a calculated strike that challenges the Mughal Empire’s might, blending historical authenticity with patriotic thrill.",
+            "loglineText": "A daring retelling of a legendary leader’s journey to Agra, where a bold political move and a masterful escape transform into a calculated strike that challenges the Mughal Empire’s might",
             "synopsisText" : "'Swari Agra' is not merely an escape story—it’s a high-stakes, strategic confrontation with Emperor Aurangzeb. Armed with detailed intelligence, the protagonist turns a politically perilous invitation into an opportunity to strike at the heart of the Mughal Empire. The drama unfolds with an insult in court, house arrest, a dramatic escape concealed in sweet boxes, a close pursuit by imperial forces, and ultimately outwitting adversaries, showcasing legendary courage, espionage, and tactical brilliance.",
             "currentStatus": ["Script & Research Completed", "Core team ready","Shoot started"],
             "releaseTarget": "Feb 2026",
@@ -333,11 +334,11 @@
       }
     ]
   },
-
   {
     "id": "8w9292309324e2ee3893rr2w8927e978we79347ee05342",
     "name": "Kubeera",
-    "endDate": "05 / 03 / 2025",
+    "startData": "07/10/2025",
+    "endDate": "17/10/2025",
     "data": [
       {
         "type": "hero_section",
@@ -345,7 +346,7 @@
           "name": "Kubeera",
           "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/kubera.jpg",
           "smallImage": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/Kuberaa+1458X972-2.jpg",
-          "description": "A ruthless billionaire uses beggars to launder money with the help of a disgraced civil servant",
+          "author": "Abhishek Varma",
           "rating": "8.2",
           "category": ["Political Thriller"],
           "fundingInProgress": [
@@ -674,11 +675,11 @@
       }
     ]
   },
-
   {
     "id": "8w9292309324e2ee3893rr2w8927e978we79347ee05777",
     "name": "Moksh",
-    "endDate": "05 / 03 / 2025",
+    "startData": "07/10/2025",
+    "endDate": "17/10/2025",
     "data": [
       {
         "type": "hero_section",
@@ -686,7 +687,7 @@
           "name": "Moksh",
           "image": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/Moksh+(1).png",
           "smallImage": "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/moksh+poster.png",
-          "description": "A breathtaking mytho-futuristic comic where reincarnation meets cosmic war",
+          "author": "Abhishek Varma",
           "rating": "7.2",
           "category": ["Comic"],
           "fundingInProgress": [
@@ -712,7 +713,7 @@
       {
         "type": "project_overview",
         "data": {
-          "loglineText": "In a world where mythology collides with modern chaos, the son of an exiled priest and a shadowy assassin rises as both savior and conqueror—wielding poison as power, he seeks to forge a perfect order, even if it means becoming the very tyrant he was destined to fight.",
+          "loglineText": "In a world where mythology collides with modern chaos, the son of an exiled priest and a shadowy assassin rises as both savior and conqueror—wielding poison as power.",
           "synopsisText" : "The Foundation of the Universe is an epic saga where mythology meets modern chaos. At its core is D, son of an exiled priest and a secret assassin, born with the legacy of Halahal—the ultimate poison. Unlike Raavan, who drew power from divine nectar, D transforms destruction itself into strength. First hailed as a visionary bridging science, mysticism, and philosophy, he seeks to build a utopia free of suffering. But his pursuit of absolute order edges into tyranny, blurring the line between savior and conqueror. Shaped by his father’s restraint and his mother’s ambition, D’s rise sparks a battle over destiny, free will, and the future of humanity—where salvation and annihilation are two sides of the same truth.",
           "currentStatus": ["Released"],
           "releaseTarget": "Q2 2025",

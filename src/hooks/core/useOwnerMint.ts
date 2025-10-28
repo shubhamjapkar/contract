@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useAccount, useContractRead, useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { ethers } from 'ethers';
-import { useNotifications } from '../infrastructure/useNotifications.tsx';
+import { toast } from 'sonner';
 
 // @ts-ignore - ABI import
 import CineFiNFTABI from '../../../src/abi/cinefi-nft-abi.json';
@@ -16,7 +16,6 @@ export interface OwnerMintParams {
 
 export function useOwnerMint() {
     const { address } = useAccount();
-    const { success, error: notifyError, info } = useNotifications();
     const [loading, setLoading] = useState(false);
 
     // Check if current user is owner
@@ -62,21 +61,21 @@ export function useOwnerMint() {
 
     const updatePhase = useCallback(async (newPhase: MintPhase): Promise<boolean> => {
         if (!isOwner || !writePhaseUpdate) {
-            notifyError('Access Denied', 'Only contract owner can update phase');
+            toast.error('Access Denied', { description: 'Only contract owner can update phase' });
             return false;
         }
 
         setLoading(true);
 
         try {
-            info('Updating Phase', `Changing mint phase to ${newPhase}...`);
+            toast.info('Updating Phase', { description: `Changing mint phase to ${newPhase}...` });
 
             // @ts-ignore
             const tx = await writePhaseUpdate({
                 recklesslySetUnpreparedArgs: [newPhase]
             });
 
-            info('Transaction Submitted', 'Waiting for phase update confirmation...');
+            toast.info('Transaction Submitted', { description: 'Waiting for phase update confirmation...' });
 
             // @ts-ignore
             const receipt = await tx.wait();
@@ -85,30 +84,27 @@ export function useOwnerMint() {
                 throw new Error('Phase update transaction failed');
             }
 
-            success(
-                'Phase Updated',
-                `Successfully changed mint phase to ${newPhase}`,
-                {
-                    actions: [{
-                        label: 'View Transaction',
-                        action: () => window.open(`${CONFIG.BLOCK_EXPLORER}/tx/${tx.hash}`, '_blank'),
-                    }]
+            toast.success('Phase Updated', {
+                description: `Successfully changed mint phase to ${newPhase}`,
+                action: {
+                    label: 'View Transaction',
+                    onClick: () => window.open(`${CONFIG.BLOCK_EXPLORER}/tx/${tx.hash}`, '_blank')
                 }
-            );
+            });
 
             return true;
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Phase update failed';
-            notifyError('Phase Update Failed', message);
+            toast.error('Phase Update Failed', { description: message });
             return false;
         } finally {
             setLoading(false);
         }
-    }, [isOwner, writePhaseUpdate, success, notifyError, info]);
+    }, [isOwner, writePhaseUpdate]);
 
     const ownerMint = useCallback(async (params: OwnerMintParams): Promise<boolean> => {
         if (!isOwner || !writeOwnerMint) {
-            notifyError('Access Denied', 'Only contract owner can perform owner mint');
+            toast.error('Access Denied', { description: 'Only contract owner can perform owner mint' });
             return false;
         }
 
@@ -130,14 +126,14 @@ export function useOwnerMint() {
                 throw new Error('At least one tier must be specified');
             }
 
-            info('Owner Mint', 'Executing owner mint transaction...');
+            toast.info('Owner Mint', { description: 'Executing owner mint transaction...' });
 
             // @ts-ignore
             const tx = await writeOwnerMint({
                 recklesslySetUnpreparedArgs: [recipient, tierIds, quantities]
             });
 
-            info('Transaction Submitted', 'Waiting for owner mint confirmation...');
+            toast.info('Transaction Submitted', { description: 'Waiting for owner mint confirmation...' });
 
             // @ts-ignore
             const receipt = await tx.wait();
@@ -148,27 +144,24 @@ export function useOwnerMint() {
 
             const totalQuantity = quantities.reduce((sum, qty) => sum + qty, 0);
 
-            success(
-                'Owner Mint Successful',
-                `Successfully minted ${totalQuantity} NFT${totalQuantity > 1 ? 's' : ''} to ${recipient}`,
-                {
-                    duration: 10000,
-                    actions: [{
-                        label: 'View Transaction',
-                        action: () => window.open(`${CONFIG.BLOCK_EXPLORER}/tx/${tx.hash}`, '_blank'),
-                    }]
+            toast.success('Owner Mint Successful', {
+                description: `Successfully minted ${totalQuantity} NFT${totalQuantity > 1 ? 's' : ''} to ${recipient}`,
+                duration: 10000,
+                action: {
+                    label: 'View Transaction',
+                    onClick: () => window.open(`${CONFIG.BLOCK_EXPLORER}/tx/${tx.hash}`, '_blank')
                 }
-            );
+            });
 
             return true;
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Owner mint failed';
-            notifyError('Owner Mint Failed', message);
+            toast.error('Owner Mint Failed', { description: message });
             return false;
         } finally {
             setLoading(false);
         }
-    }, [isOwner, writeOwnerMint, success, notifyError, info]);
+    }, [isOwner, writeOwnerMint]);
 
     return {
         isOwner: !!isOwner,

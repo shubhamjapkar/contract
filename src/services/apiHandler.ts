@@ -189,7 +189,7 @@ export const apiHandler = {
             return {
                 name: apiData.name,
                 wallet_id: apiData.wallet_id,
-                avatar: "/api/placeholder/80/80",
+                avatar: "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/profile_pic.png",
                 total_portfolio_value: metrics.totalPortfolioValue || Number(apiData.total_portfolio_value) || apiData.invested_values,
                 daily_accrual: Number(apiData.daily_accural) || 0,
                 average_roi: Number(apiData.average_roi) || 0,
@@ -205,7 +205,7 @@ export const apiHandler = {
             return {
                 name: dummyProfileData.data.name,
                 wallet_id: dummyProfileData.data.wallet_id,
-                avatar: "/api/placeholder/80/80",
+                avatar: "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/profile_pic.png",
                 total_portfolio_value: metrics.totalPortfolioValue,
                 daily_accrual: dummyProfileData.data.daily_accural,
                 average_roi: dummyProfileData.data.average_roi,
@@ -243,7 +243,7 @@ export const apiHandler = {
             return {
                 name: apiData.name,
                 wallet_id: apiData.wallet_id,
-                avatar: "/api/placeholder/80/80",
+                avatar: "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/profile_pic.png",
                 total_portfolio_value: metrics.totalPortfolioValue || Number(apiData.total_portfolio_value) || apiData.invested_values,
                 daily_accrual: Number(apiData.daily_accural) || 0,
                 average_roi: Number(apiData.average_roi) || 0,
@@ -261,7 +261,7 @@ export const apiHandler = {
             return {
                 name: updatedDummy.data.name,
                 wallet_id: updatedDummy.data.wallet_id,
-                avatar: "/api/placeholder/80/80",
+                avatar: "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/profile_pic.png",
                 total_portfolio_value: metrics.totalPortfolioValue,
                 daily_accrual: updatedDummy.data.daily_accural,
                 average_roi: updatedDummy.data.average_roi,
@@ -385,7 +385,7 @@ export const apiHandler = {
             const userProfile = {
                 name: apiData.name,
                 wallet_id: apiData.wallet_id,
-                avatar: "/api/placeholder/80/80",
+                avatar: "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/profile_pic.png",
                 total_portfolio_value: metrics.totalPortfolioValue || Number(apiData.total_portfolio_value) || apiData.invested_values,
                 daily_accrual: Number(apiData.daily_accural) || 0,
                 average_roi: Number(apiData.average_roi) || 0,
@@ -451,7 +451,7 @@ export const apiHandler = {
             const userProfile = {
                 name: dummyProfileData.data.name,
                 wallet_id: dummyProfileData.data.wallet_id,
-                avatar: "/api/placeholder/80/80",
+                avatar: "https://unlu-general.s3.ap-south-1.amazonaws.com/contest/profile_pic.png",
                 total_portfolio_value: metrics.totalPortfolioValue,
                 daily_accrual: dummyProfileData.data.daily_accural,
                 average_roi: dummyProfileData.data.average_roi,

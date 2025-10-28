@@ -161,7 +161,7 @@ export const MintForm: React.FC<MintFormProps> = ({
                                     <div className="flex items-center gap-4 text-sm text-gray-400">
                                         <span>Available: {formatNumber(entry.remaining)}</span>
                                         {validation.currentPhase !== MintPhase.CLAIM && tierInfo && (
-                                            <span>Price: {formatUSDC(tierInfo.price)}</span>
+                                            <span>Price: ${formatUSDC(tierInfo.price)}</span>
                                         )}
                                     </div>
                                 </div>
@@ -244,8 +244,6 @@ export const MintForm: React.FC<MintFormProps> = ({
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
                         Processing...
                     </div>
-                ) : totalQuantity === 0 ? (
-                    'Select NFTs to Mint'
                 ) : validation.currentPhase === MintPhase.CLAIM ? (
                     `Claim ${totalQuantity} NFT${totalQuantity > 1 ? 's' : ''} (FREE)`
                 ) : (

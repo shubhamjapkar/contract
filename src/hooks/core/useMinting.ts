@@ -1,67 +1,125 @@
-import {useState, useCallback, useRef} from 'react';
+import { useState, useCallback, useRef } from 'react';
 import {
     useAccount,
-    useContractWrite,
-    usePrepareContractWrite,
     useContractRead,
     usePublicClient,
-    useWalletClient
+    useWalletClient,
 } from 'wagmi';
-import { ethers } from 'ethers';
+import { ethers, Contract, providers, BigNumber } from 'ethers';
 import { useWhitelist } from './useWhitelist';
-import { useNotifications } from '../infrastructure/useNotifications.tsx';
+import { toast } from 'sonner';
 import { CONFIG } from '../../config/environment';
-// @ts-ignore - ABI imports
 import CineFiNFTABI from '../../../src/abi/cinefi-nft-abi.json';
-import USDCABI from '../../abi/usdc-abi.json';
-import {MintPhase, MintTransaction } from '../../interface/api';
-import {parseNFTMintTransaction} from "../../services/blockchain/transactionParser.ts";
-import {getContractService} from "../../services/blockchain/contractService.ts";
+import USDCABI from '../../../src/abi/usdc-abi.json'
+import { MintPhase, MintTransaction } from '../../interface/api';
+import { parseNFTMintTransaction } from '../../services/blockchain/transactionParser.ts';
+import { utils } from 'ethers';
+import { getContractService } from '../../services/blockchain/contractService';
+import { adminAPI } from '../../services/adminAPI';
+import {useWallet} from "../../components/provider/WalletProvider.tsx";
 
-function walletClientToSigner(walletClient: any) {
-    if (!walletClient) return null;
+/** Try to parse a revert into something human-readable */
+function decodeRevert(abi: any[], err: any): string | null {
+    //   const iface = new Interface(abi as any);
+    const iface = new utils.Interface(CineFiNFTABI);
 
-    const { account, chain, transport } = walletClient;
-    const network = {
-        chainId: chain.id,
-        name: chain.name,
-        ensAddress: chain.contracts?.ensRegistry?.address,
-    };
-    const provider = new ethers.providers.Web3Provider(transport, network);
-    const signer = provider.getSigner(account.address);
-    return signer;
+    // ethers v5 error shapes can vary; try common spots
+    const data: string | undefined =
+        err?.error?.data || err?.data || err?.receipt?.revertReason || err?.reason;
+
+    // console.log(err);
+
+    if (!data || typeof data !== 'string' || !data.startsWith('0x')) return null;
+
+    // Standard Error(string)
+    if (data.startsWith('0x08c379a0')) {
+        try {
+            const [reason] = utils.defaultAbiCoder.decode(['string'], '0x' + data.slice(10));
+            return String(reason);
+        } catch { }
+    }
+
+    // Panic(uint256)
+    if (data.startsWith('0x4e487b71')) {
+        try {
+            const [code] = utils.defaultAbiCoder.decode(['uint256'], '0x' + data.slice(10));
+            return `Panic(${BigNumber.from(code).toString()})`;
+        } catch { }
+    }
+
+    // Custom error (with or without args)
+    try {
+        const parsed = iface.parseError(data as any);
+        if (!parsed) return null;
+        const args =
+            parsed.args && parsed.args.length
+                ? '(' + parsed.args.map((a: any) => (typeof a === 'object' ? a.toString() : String(a))).join(', ') + ')'
+                : '()';
+        return `${parsed.name}${args}`;
+    } catch {
+        // Sometimes ABI doesn’t include custom errors; fallback to selector
+        return `CustomError ${data.slice(0, 10)}`;
+    }
 }
-
 export interface MintParams {
     tierIds: number[];
     quantities: number[];
-    allocations: number[];
     merkleProofs: string[][];
-    tierPrices?: ethers.BigNumber[]; // Add tier prices for USDC calculation
+    allocations: number[];
+    tierPrices?: ethers.BigNumber[]; // for paid phases (USDC)
+}
+
+export function toBN(x: any | undefined): BigNumber {
+    if (x == null) return BigNumber.from(0);
+    if (BigNumber.isBigNumber(x)) return x;
+    if (typeof x === 'bigint') return BigNumber.from(x.toString());
+    if (typeof x === 'number') return BigNumber.from(x);
+    if (typeof x === 'string') return BigNumber.from(x);
+    // last resort
+    try {
+        return BigNumber.from(String(x));
+    } catch {
+        return BigNumber.from(0);
+    }
+}
+
+function walletClientToSigner(walletClient: any): ethers.Signer | null {
+    if (!walletClient) return null;
+
+    // Prefer the underlying EIP-1193 provider if present, else fallback to window.ethereum
+    const eip1193 =
+        (walletClient.transport as any)?.provider ??
+        (typeof window !== 'undefined' ? (window as any).ethereum : undefined);
+
+    if (!eip1193) return null;
+
+    const provider = new providers.Web3Provider(eip1193);
+    return provider.getSigner(walletClient.account.address);
 }
 
 export function useMinting() {
     const { address } = useAccount();
     const publicClient = usePublicClient();
     const { data: walletClient } = useWalletClient();
-    const { validation, getMerkleProof, refetch } = useWhitelist();
-    const { success, error: notifyError, info, warning } = useNotifications();
+    const { refetch } = useWhitelist();
+    const { currentPhase } = useWallet()
 
     const [loading, setLoading] = useState(false);
     const [txHash, setTxHash] = useState<string | null>(null);
 
+    // Optional ethers Provider (only used by your getContractService fallback)
     const provider = useRef(
         new ethers.providers.JsonRpcProvider(
-            import.meta.env.VITE_BASE_SEPOLIA_RPC || ''
+            import.meta.env.VITE_RPC_URL || ''
         )
     ).current;
 
-    // Check USDC balance and allowance
+    // ---- USDC reads ----------------------------------------------------------
     const { data: usdcBalance } = useContractRead({
         address: CONFIG.USDC_ADDRESS as `0x${string}`,
         abi: USDCABI,
         functionName: 'balanceOf',
-        args: [address],
+        args: address ? [address as `0x${string}`] : undefined,
         enabled: !!address,
     });
 
@@ -69,228 +127,215 @@ export function useMinting() {
         address: CONFIG.USDC_ADDRESS as `0x${string}`,
         abi: USDCABI,
         functionName: 'allowance',
-        args: [address, CONFIG.CINEFI_NFT_ADDRESS],
+        args: address && CONFIG.CINEFI_NFT_ADDRESS ? [address as `0x${string}`, CONFIG.CINEFI_NFT_ADDRESS as `0x${string}`] : undefined,
         enabled: !!address,
     });
 
-    // USDC approval setup (will be configured dynamically)
-    const { config: approvalConfig } = usePrepareContractWrite({
-        address: CONFIG.USDC_ADDRESS as `0x${string}`,
-        abi: USDCABI,
-        functionName: 'approve',
-        args: [CONFIG.CINEFI_NFT_ADDRESS, ethers.BigNumber.from(0)],
-        enabled: false, // Only enabled when needed
-    });
+    // ---- Helpers -------------------------------------------------------------
+    const calculateTotalCost = useCallback(
+        (tierIds: number[], quantities: number[], tierPrices: ethers.BigNumber[]) => {
+            let total = ethers.BigNumber.from(0);
+            for (let i = 0; i < tierIds.length; i++) {
+                total = total.add(tierPrices[i].mul(quantities[i]));
+            }
+            return total;
+        },
+        []
+    );
 
-    const { writeAsync: approveUSDC } = useContractWrite(approvalConfig);
+    // ---- Main action ---------------------------------------------------------
+    const mint =  async (params: MintParams): Promise<MintTransaction> => {
 
-    // Mint setup (claim)
-    const { config: claimConfig } = usePrepareContractWrite({
-        address: CONFIG.CINEFI_NFT_ADDRESS as `0x${string}`,
-        abi: CineFiNFTABI,
-        functionName: 'getTotalTiers',
-        args: [address, CONFIG.CINEFI_NFT_ADDRESS],
-        enabled: false,
-    });
-
-
-    console.log(claimConfig, "___claimConfig___")
-    const { writeAsync: claimNFT } = useContractWrite(claimConfig);
-
-    // Mint setup (paid)
-    const { config: mintConfig } = usePrepareContractWrite({
-        address: CONFIG.CINEFI_NFT_ADDRESS as `0x${string}`,
-        abi: CineFiNFTABI,
-        functionName: 'mintTier',
-        args: [[], [], []], // Will be set dynamically
-        enabled: false, // Only enabled when ready to mint
-    });
-
-    const { writeAsync: mintTier } = useContractWrite(mintConfig);
-
-    /**
-     * Calculate total cost for paid minting
-     */
-    const calculateTotalCost = useCallback((tierIds: number[], quantities: number[], tierPrices: ethers.BigNumber[]) => {
-        let total = ethers.BigNumber.from(0);
-
-        for (let i = 0; i < tierIds.length; i++) {
-            const cost = tierPrices[i].mul(quantities[i]);
-            total = total.add(cost);
-        }
-
-        return total;
-    }, []);
-
-    /**
-     * Execute mint with USDC approval handling
-     */
-    const mint = useCallback(async (params: MintParams): Promise<MintTransaction> => {
-        if (!address || !validation) {
+        if (!address) {
             throw new Error('Not ready to mint: wallet not connected or whitelist not loaded');
         }
+        if (!walletClient?.chain?.id) {
+            throw new Error('Wallet chain not detected. Connect your wallet.');
+        }
+        const signer = walletClientToSigner(walletClient);
+        if (!signer) {
+            throw new Error('Signer not available (connect wallet and approve access)');
+        }
+        const { tierIds, quantities, merkleProofs, tierPrices, allocations } = params;
+        const isClaimPhase = currentPhase === MintPhase.CLAIM;
 
-        const { tierIds, quantities, allocations, merkleProofs } = params;
-        const isClaimPhase = validation.currentPhase === MintPhase.CLAIM;
+        // Basic arg validation
+        if (
+            tierIds.length === 0 ||
+            quantities.length === 0 ||
+            tierIds.length !== quantities.length ||
+            merkleProofs.length !== tierIds.length ||
+            allocations.length !== tierIds.length
+        ) {
+            throw new Error('Invalid inputs: mismatched array lengths or empty arrays.');
+        }
+
+        const nft = new Contract(CONFIG.CINEFI_NFT_ADDRESS, CineFiNFTABI, signer);
+        const usdc = new Contract(CONFIG.USDC_ADDRESS, USDCABI, signer);
+        const tierIdsBN = tierIds.map((n) => BigNumber.from(n));
+        const quantitiesBN = quantities.map((n) => BigNumber.from(n));
+        const proofsHex = merkleProofs as `0x${string}`[][];
+        const allocationsBN = allocations.map((n) => BigNumber.from(n));
 
         setTxHash(null);
         setLoading(true);
 
+        let totalCost = calculateTotalCost(tierIds, quantities, tierPrices);
+        totalCost = toBN(totalCost);
+
         try {
-            info('Mint Started', 'Preparing your mint transaction...');
+            toast.info('Mint Started', { description: 'Preparing your mint transaction…' });
 
-            // Validate inputs
-            if (tierIds.length !== quantities.length || tierIds.length !== allocations.length || tierIds.length !== merkleProofs.length) {
-                throw new Error('Array lengths must match');
-            }
-
-            // For paid phases (GUARANTEED/FCFS), handle USDC approval
+            // Handle USDC only for paid phases
             if (!isClaimPhase) {
-                // Calculate exact total cost from tier prices
-                if (!params.tierPrices || params.tierPrices.length !== tierIds.length) {
+                if (!tierPrices || tierPrices.length !== tierIds.length) {
                     throw new Error('Tier prices required for paid minting phases');
                 }
 
-                const totalCost = calculateTotalCost(tierIds, quantities, params.tierPrices);
+                // Fetch fresh USDC balance and allowance
+                let currentBalance: BigNumber;
+                let currentAllowance: BigNumber;
 
-                const currentAllowance = usdcAllowance ? ethers.BigNumber.from(usdcAllowance.toString()) : ethers.BigNumber.from(0);
-                const currentBalance = usdcBalance ? ethers.BigNumber.from(usdcBalance.toString()) : ethers.BigNumber.from(0);
-
-                // Check balance
-                if (currentBalance.lt(totalCost)) {
-                    throw new Error(`Insufficient USDC balance. Need ${ethers.utils.formatUnits(totalCost, 6)} USDC`);
+                try {
+                    currentBalance = toBN(await usdc.balanceOf(address));
+                    currentAllowance = toBN(await usdc.allowance(address, CONFIG.CINEFI_NFT_ADDRESS));
+                } catch (e) {
+                    throw new Error(`Failed to fetch USDC balance/allowance: ${e}`);
                 }
 
-                // Check and handle allowance
-                if (currentAllowance.lt(totalCost)) {
-                    const signer = walletClientToSigner(walletClient);
-                    if (!signer) throw new Error('Signer not available');
-
-                    warning(
-                        'USDC Approval Required',
-                        `Please approve ${ethers.utils.formatUnits(totalCost, 6)} USDC spending in the next transaction`
+                if ((currentBalance as ethers.BigNumber).lt(totalCost as ethers.BigNumber)) {
+                    throw new Error(
+                        `Insufficient USDC balance. Need ${ethers.utils.formatUnits(totalCost, 6)} USDC`
                     );
+                }
 
-                    info('USDC Approval', 'Approving USDC spending...');
+                console.log(
+                    "Current Allowance:", ethers.utils.formatUnits(currentAllowance, 6), "USDC",
+                    "| Total Cost:", ethers.utils.formatUnits(totalCost, 6), "USDC"
+                )
+                if (currentAllowance.lt(totalCost)) {
+                    console.log(
+                        "Current Allowance:", ethers.utils.formatUnits(currentAllowance, 6), "USDC",
+                        "| Total Cost:", ethers.utils.formatUnits(totalCost, 6), "USDC"
+                    )
+                    toast.warning('USDC Approval Required', {
+                        description: `Please approve ${ethers.utils.formatUnits(totalCost, 6)} USDC in the next transaction`
+                    });
 
-                    const approveTx = await getContractService(provider).approveUSDC(signer, CONFIG.CINEFI_NFT_ADDRESS, totalCost);
+                    toast.info('USDC Approval', { description: 'Approving USDC spending…' });
 
-                    info('Approval Submitted', 'Waiting for USDC approval confirmation...');
-                    const approvalReceipt = await approveTx.wait();
-
-                    if (approvalReceipt.status !== 1) {
-                        throw new Error('USDC approval failed');
+                    // Estimate gas for approval transaction
+                    let approveGasLimit: BigNumber;
+                    try {
+                        approveGasLimit = await usdc.estimateGas.approve(CONFIG.CINEFI_NFT_ADDRESS, totalCost);
+                        // Add 10% buffer
+                        approveGasLimit = approveGasLimit.mul(110).div(100);
+                    } catch (e) {
+                        // Fallback to a reasonable default if estimation fails
+                        approveGasLimit = BigNumber.from(100000);
                     }
 
-                    success('USDC Approved', `${ethers.utils.formatUnits(totalCost, 6)} USDC spending approved successfully`);
+                    const approveTx = await usdc.approve(CONFIG.CINEFI_NFT_ADDRESS, totalCost, {
+                        gasLimit: approveGasLimit
+                    })
+
+                    toast.info('Approval Submitted', { description: 'Waiting for USDC approval confirmation…' });
+                    const approvalReceipt = await (approveTx as any).wait?.();
+                    if (approvalReceipt?.status !== 1) throw new Error('USDC approval failed');
+
+                    toast.success('USDC Approved', {
+                        description: `${ethers.utils.formatUnits(totalCost, 6)} USDC spending approved successfully`
+                    });
                 }
             }
 
-            // Execute the appropriate mint function
+            // Execute mint
             let tx: any;
+            let gasLimit: BigNumber;
 
-            if (isClaimPhase) {
-                // if (!claimNFT) throw new Error('Claim function not available');
-
-                // @ts-ignore
-                // tx = await claimNFT({
-                //     recklesslySetUnpreparedArgs: [tierIds, quantities, merkleProofs]
-                // });
-
-                const signer = walletClientToSigner(walletClient);
-                if (!signer) throw new Error('Signer not available');
-
-                info('Claiming NFTs', 'Executing claim transaction...');
-
-                tx = await getContractService(provider).claimNFT(signer, tierIds, quantities, allocations, merkleProofs);
-            } else {
-                const signer = walletClientToSigner(walletClient);
-                if (!signer) throw new Error('Signer not available');
-
-                info('Minting NFTs', 'Executing mint transaction...');
-
-                tx = await getContractService(provider).mintTier(signer, tierIds, quantities, allocations, merkleProofs);
+            // Get contract service and estimate gas
+            try {
+                const contractService = getContractService(provider);
+                gasLimit = await contractService.estimateMintGas(
+                    signer,
+                    tierIds,
+                    quantities,
+                    allocations,
+                    merkleProofs,
+                    isClaimPhase
+                );
+            } catch (e) {
+                throw new Error(`EstimateMintGasn failed: ${e}`);
             }
 
-            setTxHash(tx.hash);
+            // Add 10% buffer to gas estimate
+            const gasLimitWithBuffer = gasLimit.mul(110).div(100);
 
-            info('Transaction Submitted', `Transaction hash: ${tx.hash.slice(0, 10)}...`, {
-                actions: [{
+            if (isClaimPhase) {
+                toast.info('Claiming NFTs', { description: 'Executing claim transaction…' });
+                tx = await nft.claimNFT(tierIds, quantities, allocations, proofsHex, {
+                    from: address,
+                    gasLimit: gasLimitWithBuffer
+                });
+            } else {
+                toast.info('Minting NFTs', { description: 'Executing mint transaction…' });
+                tx = await nft.mintTier(tierIdsBN, quantitiesBN, allocationsBN, proofsHex, {
+                    gasLimit: gasLimitWithBuffer
+                });
+            }
+
+            setTxHash(await tx.hash);
+
+            toast.info('Transaction Submitted', {
+                description: `Transaction hash: ${tx.hash.slice(0, 10)}…`,
+                action: {
                     label: 'View on Explorer',
-                    action: () => window.open(`${CONFIG.BLOCK_EXPLORER}/tx/${tx.hash}`, '_blank'),
-                }],
+                    onClick: () => window.open(`${CONFIG.BLOCK_EXPLORER}/tx/${tx.hash}`, '_blank')
+                }
             });
 
-            // Wait for confirmation
             const receipt = await tx.wait();
-
             if (receipt.status !== 1) {
                 throw new Error('Transaction failed during execution');
             }
 
-            // Parse minted token IDs from transaction logs
             const tokenIds = await parseNFTMintTransaction(tx.hash, publicClient);
 
-            // Refresh whitelist status
-            refetch();
+            // Update mint date for the minted tokens
+            if (tokenIds && tokenIds.length > 0) {
+                await adminAPI.updateMintDate(tokenIds);
+            }
 
-            const totalMinted = quantities.reduce((sum, qty) => sum + qty, 0);
-            success(
-                'Mint Successful!',
-                `Successfully ${isClaimPhase ? 'claimed' : 'minted'} ${totalMinted} NFT${totalMinted > 1 ? 's' : ''} across ${tierIds.length} tier${tierIds.length > 1 ? 's' : ''}`,
-                {
-                    duration: 10000,
-                    actions: [{
-                        label: 'View Transaction',
-                        action: () => window.open(`${CONFIG.BLOCK_EXPLORER}/tx/${tx.hash}`, '_blank'),
-                    }],
-                    metadata: { tokenIds } // Include token IDs in notification metadata
+            await refetch();
+
+            const totalMinted = quantities.reduce((sum, q) => sum + q, 0);
+            toast.success('Mint Successful!', {
+                description: `Successfully ${isClaimPhase ? 'claimed' : 'minted'} ${totalMinted} NFT${totalMinted > 1 ? 's' : ''
+                } across ${tierIds.length} tier${tierIds.length > 1 ? 's' : ''}`,
+                duration: 10000,
+                action: {
+                    label: 'View Transaction',
+                    onClick: () => window.open(`${CONFIG.BLOCK_EXPLORER}/tx/${tx.hash}`, '_blank')
                 }
-            );
+            });
 
-            return {
-                success: true,
-                txHash: tx.hash,
-                tokenIds, // Return actual parsed token IDs
-            };
-
+            return { success: true, txHash: tx.hash, tokenIds };
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-
-            notifyError(
-                'Mint Failed',
-                errorMessage,
-                {
-                    duration: 10000,
-                    actions: txHash ? [{
-                        label: 'View Transaction',
-                        action: () => window.open(`${CONFIG.BLOCK_EXPLORER}/tx/${txHash}`, '_blank'),
-                    }] : undefined,
-                }
-            );
-
+            toast.error('Mint Failed', {
+                description: errorMessage.slice(0, 200),
+                duration: 10000,
+                action: txHash ? {
+                    label: 'View Transaction',
+                    onClick: () => window.open(`${CONFIG.BLOCK_EXPLORER}/tx/${txHash}`, '_blank')
+                } : undefined
+            });
             throw err;
         } finally {
             setLoading(false);
         }
-    }, [
-        address,
-        validation,
-        walletClient,
-        usdcBalance,
-        usdcAllowance,
-        approveUSDC,
-        claimNFT,
-        mintTier,
-        calculateTotalCost,
-        refetch,
-        success,
-        notifyError,
-        info,
-        warning,
-        publicClient,
-        provider
-    ]);
+    }
+
 
     return {
         mint,

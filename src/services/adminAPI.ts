@@ -1,5 +1,6 @@
 import {
     WhitelistStatus,
+    MerkleProofResponse,
     UpdateMintDateResponse
 } from '../interface/api.ts';
 import { CONFIG } from '../config/environment.ts';

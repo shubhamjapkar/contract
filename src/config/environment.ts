@@ -10,7 +10,7 @@
 //     // Network Configuration (Base Sepolia)
 //     CHAIN_ID: 84532,
 //     RPC_URL: import.meta.env.VITE_RPC_URL || '',
-//     BLOCK_EXPLORER: 'https://sepolia.basescan.org',
+//     BLOCK_EXPLORER: '',
 //
 //     // UI Configuration
 //     MAX_RETRY_ATTEMPTS: 3,
@@ -69,7 +69,7 @@ export const CONFIG = {
     // Network Configuration (Base Sepolia)
     CHAIN_ID: 84532,
     RPC_URL: import.meta.env.VITE_RPC_URL || '',
-    BLOCK_EXPLORER: import.meta.env.VITE_BLOCK_EXPLORER || '',
+    BLOCK_EXPLORER: 'https://sepolia.basescan.org/',
 
     // UI Configuration
     MAX_RETRY_ATTEMPTS: 3,

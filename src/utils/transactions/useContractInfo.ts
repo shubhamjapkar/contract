@@ -14,7 +14,7 @@ export const useContractInfo = () => {
       setError(null);
       
       // Use direct RPC provider for read-only operations
-      const rpc = import.meta.env.VITE_BASE_SEPOLIA_RPC || '';
+      const rpc = import.meta.env.VITE_RPC_URL || '';
       const provider = new ethers.providers.JsonRpcProvider(rpc);
       const contract = new ethers.Contract(
         CONTRACTS.CINEFI_NFT,
